@@ -10,7 +10,6 @@ namespace Develop.UI
     {
         public InputEventHandler(string actionName)
         {
-            // 対象となる InputAction 名を保持する
             _actionName = actionName;
         }
 
@@ -20,11 +19,10 @@ namespace Develop.UI
 
         public void Bind(PlayerInput playerInput)
         {
-            // PlayerInput から対象の InputAction を取得する
+            if (playerInput == null) return;
             _action = playerInput.actions[_actionName];
             if (_action == null) return;
 
-            // 各フェーズのイベントを登録する
             if (OnStarted != null) _action.started += OnStarted;
             if (OnPerformed != null) _action.performed += OnPerformed;
             if (OnCanceled != null) _action.canceled += OnCanceled;
@@ -34,7 +32,6 @@ namespace Develop.UI
         {
             if (_action == null) return;
 
-            // 各フェーズのイベントを解除する
             if (OnStarted != null) _action.started -= OnStarted;
             if (OnPerformed != null) _action.performed -= OnPerformed;
             if (OnCanceled != null) _action.canceled -= OnCanceled;
