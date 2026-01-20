@@ -6,7 +6,7 @@ namespace Develop.Player
     {
         public void OnMove(Vector3 input)
         {
-
+            Debug.Log(input);
         }
     }
 }
