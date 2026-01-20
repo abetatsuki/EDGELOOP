@@ -1,4 +1,5 @@
 ﻿using Develop.Data;
+using Develop.Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,18 +11,17 @@ namespace Develop.UI
     ///</summary>
     public class InputBuffer : MonoBehaviour
     {
-        public void Init(DataContainer dataContainer)
+        public void Init(IPlayerInputPort inputPort)
         {
-            _dataContainer = dataContainer;
+            _inputPort = inputPort;
         }
         public void OnMove(InputAction.CallbackContext context)
         {
             Vector2 input = context.ReadValue<Vector2>();
-            Vector3 value = new Vector3(input.y, 0, input.x);
-            _dataContainer.PlayerPresenter.OnMove(value);
+            _inputPort?.OnMoveInput(input);
         }
 
-        private DataContainer _dataContainer;
+        private IPlayerInputPort _inputPort;
 
 
     }
