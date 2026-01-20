@@ -10,5 +10,14 @@ namespace UI
     public class InputBuffer : MonoBehaviour
     {
 
+
+        public Vector3 OnMove(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            Vector3 value = new Vector3(input.y, 0, input.x);
+            return value;
+        }
+
+        
     }
 }
