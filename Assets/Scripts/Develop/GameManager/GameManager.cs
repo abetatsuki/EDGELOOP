@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _dataContainer = new DataContainer();
-        _dataContainer.Init();
-        _inputBuffer.Init(_dataContainer.PlayerPresenter);
+        _dataContainer?.Init();
+        _inputBuffer?.Init(_dataContainer.PlayerPresenter);
     }
 
     [SerializeField] private InputBuffer _inputBuffer;
