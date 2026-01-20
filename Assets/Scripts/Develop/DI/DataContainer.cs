@@ -8,7 +8,7 @@ namespace Develop.Data
         public DataContainer() {}
         
         public IMover Mover { get; private set; }
-        public IPlayerInputPort PlayerPresenter { get; private set; }
+        public PlayerPresenter PlayerPresenter { get; private set; }
 
 
         public void Init()
