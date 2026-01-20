@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        _dataContainer.PlayerPresenter.Update();
+        _dataContainer?.PlayerPresenter.Update();
     }
 
 }
