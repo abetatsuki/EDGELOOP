@@ -1,28 +1,90 @@
-﻿using Develop.Data;
-using Develop.Interface;
+﻿using Develop.Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 namespace Develop.UI
 {
     [RequireComponent(typeof(PlayerInput))]
-    ///<summary>
-    /// 入力をバッファするクラス。
-    ///</summary>
+    /// <summary>
+    /// 入力をバッファし、ポーリング用の状態を管理するクラス
+    /// </summary>
     public class InputBuffer : MonoBehaviour
     {
-        public void Init(IPlayerInputPort inputPort)
+        public void Init(PlayerPresenter presenter)
         {
-            _inputPort = inputPort;
-        }
-        public void OnMove(InputAction.CallbackContext context)
-        {
-            Vector2 input = context.ReadValue<Vector2>();
-            _inputPort?.OnMoveInput(input);
+            _playerPresenter = presenter;
         }
 
-        private IPlayerInputPort _inputPort;
+        private PlayerPresenter _playerPresenter;
+        private PlayerInput _playerInput;
 
+        private const string MOVE = "Move";
 
+        private InputAction _moveAction;
+        private bool _isMoveActive;
+
+        private List<InputEventHandler> _handlers = new List<InputEventHandler>();
+
+        private void Awake()
+        {
+            _playerInput = GetComponent<PlayerInput>();
+
+            CreateMoveEvent();
+
+            EventBind();
+        }
+
+        private void Update()
+        {
+            if (!_isMoveActive || _moveAction == null) return;
+
+            Vector2 input = _moveAction.ReadValue<Vector2>();
+
+            _playerPresenter?.OnMoveInput(input);
+        }
+
+        private void CreateMoveEvent()
+        {
+            var moveHandler = new InputEventHandler(MOVE);
+
+            moveHandler.OnPerformed += OnMoveStarted;
+
+            moveHandler.OnCanceled += OnMoveCanceled;
+
+            _handlers.Add(moveHandler);
+        }
+
+        private void OnMoveStarted(InputAction.CallbackContext context)
+        {
+            _moveAction = context.action;
+
+            _isMoveActive = true;
+        }
+
+        private void OnMoveCanceled(InputAction.CallbackContext context)
+        {
+            _isMoveActive = false;
+
+            _playerPresenter?.OnMoveInput(Vector2.zero);
+        }
+
+        private void EventBind()
+        {
+            foreach (var handler in _handlers)
+            {
+                handler.Bind(_playerInput);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var handler in _handlers)
+            {
+                handler.Unbind();
+            }
+
+            _handlers.Clear();
+        }
     }
 }
