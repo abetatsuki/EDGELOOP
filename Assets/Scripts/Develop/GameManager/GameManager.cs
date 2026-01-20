@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     {
         _dataContainer = new DataContainer();
         _dataContainer.Init();
-        _inputBuffer.Init(_dataContainer);
+        _inputBuffer.Init(_dataContainer.PlayerPresenter);
     }
 
     [SerializeField] private InputBuffer _inputBuffer;
