@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using Develop.Data;
+using Develop.Interface;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace UI
+namespace Develop.UI
 {
     [RequireComponent(typeof(PlayerInput))]
     ///<summary>
@@ -9,14 +11,18 @@ namespace UI
     ///</summary>
     public class InputBuffer : MonoBehaviour
     {
-
-
+        public void Init(IPlayerInputPort inputPort)
+        {
+            _inputPort = inputPort;
+        }
         public void OnMove(InputAction.CallbackContext context)
         {
             Vector2 input = context.ReadValue<Vector2>();
-            Vector3 value = new Vector3(input.y, 0, input.x);
+            _inputPort?.OnMoveInput(input);
         }
 
-        
+        private IPlayerInputPort _inputPort;
+
+
     }
 }
