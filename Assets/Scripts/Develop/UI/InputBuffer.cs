@@ -11,12 +11,12 @@ namespace Develop.UI
     /// </summary>
     public class InputBuffer : MonoBehaviour
     {
-        public void Init(PlayerPresenter presenter)
+        public void Init(IPlayerInputReceiver reciver)
         {
-            _playerPresenter = presenter;
+            _receiver = reciver;
         }
 
-        private PlayerPresenter _playerPresenter;
+        private IPlayerInputReceiver _receiver;
         private PlayerInput _playerInput;
 
         private const string MOVE = "Move";
@@ -41,7 +41,7 @@ namespace Develop.UI
 
             Vector2 input = _moveAction.ReadValue<Vector2>();
 
-            _playerPresenter?.OnMoveInput(input);
+            _receiver.OnMoveInput(input);
         }
 
         private void CreateMoveEvent()
@@ -66,7 +66,7 @@ namespace Develop.UI
         {
             _isMoveActive = false;
 
-            _playerPresenter?.OnMoveInput(Vector2.zero);
+            _receiver?.OnMoveInput(Vector2.zero);
         }
 
         private void EventBind()
