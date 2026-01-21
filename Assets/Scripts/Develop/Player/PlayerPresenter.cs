@@ -1,7 +1,7 @@
 ﻿using Develop.Interface;
 using UnityEngine;
 
-public class PlayerPresenter : IPlayerInputPort
+public class PlayerPresenter : IPlayerUpdatable,IPlayerInputReceiver
 {
 
     public PlayerPresenter(IMover mover)
