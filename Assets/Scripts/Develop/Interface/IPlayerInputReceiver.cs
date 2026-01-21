@@ -1,10 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 namespace Develop.Interface
 {
-    public interface IPlayerInputPort
+    public interface IPlayerInputReceiver
     {
         void OnMoveInput(Vector2 input);
     }
-
 }
-
