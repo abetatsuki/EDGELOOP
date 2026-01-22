@@ -17,27 +17,28 @@ namespace Develop.UI
         public event Action<InputAction.CallbackContext> OnPerformed;
         public event Action<InputAction.CallbackContext> OnCanceled;
 
+        public InputAction Action;
         public void Bind(PlayerInput playerInput)
         {
             if (playerInput == null) return;
-            _action = playerInput.actions[_actionName];
-            if (_action == null) return;
+            Action = playerInput.actions[_actionName];
+            if (Action == null) return;
 
-            if (OnStarted != null) _action.started += OnStarted;
-            if (OnPerformed != null) _action.performed += OnPerformed;
-            if (OnCanceled != null) _action.canceled += OnCanceled;
+            if (OnStarted != null) Action.started += OnStarted;
+            if (OnPerformed != null) Action.performed += OnPerformed;
+            if (OnCanceled != null) Action.canceled += OnCanceled;
         }
 
         public void Unbind()
         {
-            if (_action == null) return;
+            if (Action == null) return;
 
-            if (OnStarted != null) _action.started -= OnStarted;
-            if (OnPerformed != null) _action.performed -= OnPerformed;
-            if (OnCanceled != null) _action.canceled -= OnCanceled;
+            if (OnStarted != null) Action.started -= OnStarted;
+            if (OnPerformed != null) Action.performed -= OnPerformed;
+            if (OnCanceled != null) Action.canceled -= OnCanceled;
         }
 
         private readonly string _actionName;
-        private InputAction _action;
+      
     }
 }
