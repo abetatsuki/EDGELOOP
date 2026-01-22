@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace Develop.Player
 {
-    public class Move : IMover
+    public class MovementService : IMover
     {
         public void OnMove(Vector3 input)
         {

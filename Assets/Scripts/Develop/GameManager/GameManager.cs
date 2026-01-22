@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     private IPlayerUpdatable _updatable;
     private void Awake()
     {
-        _mover = new Move();
+        _mover = new MovementService();
         var presenter = new PlayerPresenter(_mover);
         _receiver = presenter;
         _updatable = presenter;
