@@ -1,21 +1,37 @@
 ﻿using Develop.Interface;
+using Develop.Player.Move.Strategies;
 using UnityEngine;
 
 namespace Develop.Player
 {
-    public class PlayerPresenter : IPlayerInputReceiver,IPlayerUpdatable
+    public class PlayerPresenter : IPlayerInputPort,IPlayerUpdatable
     {
+        private readonly IMovableBody _body;
+        
+        private IMovementStrategy _currentStrategy;
+        private readonly IMovementStrategy _walkStrategy;
+        private readonly IMovementStrategy _runStrategy;
 
-        public PlayerPresenter(IMover mover)
+        public PlayerPresenter(
+            IMovableBody body, 
+            IMovementStrategy walkStrategy, 
+            IMovementStrategy runStrategy)
         {
-            _mover = mover;
+            _body = body;
+            _walkStrategy = walkStrategy;
+            _runStrategy = runStrategy;
+            
+            _currentStrategy = _walkStrategy;
         }
         public void Update() { }
-        public void OnMoveInput(Vector2 input)
+        public void OnMoveInput(Vector2 input, float deltaTime)
         {
-            Vector3 worldMoveInput = new Vector3(input.x, 0f, input.y);
-            _mover?.OnMove(worldMoveInput);
+            _currentStrategy.Move(_body, input, deltaTime);
         }
-        private IMover _mover;
+
+        public void OnRunInput(bool isRunning)
+        {
+            _currentStrategy = isRunning ? _runStrategy : _walkStrategy;
+        }
     }
 }
