@@ -58,8 +58,11 @@ namespace Develop.UI
 
         private void OnMoveStarted(InputAction.CallbackContext context)
         {
-            _moveAction = context.action;
-
+            if(_moveAction == null)
+            {
+                _moveAction = context.action;
+            }
+            if (_isMoveActive == true) return;
             _isMoveActive = true;
         }
 
