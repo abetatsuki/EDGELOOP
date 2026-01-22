@@ -1,6 +1,6 @@
 ﻿using Develop.Interface;
 using UnityEngine;
-namespace Develop.Player
+namespace Develop.Player.Move
 {
     public class MovementService : IMover
     {

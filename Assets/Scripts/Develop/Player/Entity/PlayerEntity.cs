@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class PlayerEntity 
+namespace Develop.Player.Entity
 {
-   
+    public class PlayerEntity 
+    {
+       
+    }
 }
