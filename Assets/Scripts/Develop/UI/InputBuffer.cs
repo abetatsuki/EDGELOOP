@@ -22,8 +22,8 @@ namespace Develop.UI
 
         private const string MOVE = "Move";
 
-        private InputAction _moveAction;
         private bool _isMoveActive;
+        private InputEventHandler _moveHandler;
 
         private List<InputEventHandler> _handlers = new List<InputEventHandler>();
 
@@ -38,36 +38,33 @@ namespace Develop.UI
 
         private void Update()
         {
-            if (!_isMoveActive || _moveAction == null) return;
+            if (!_isMoveActive ) return;
 
-            Vector2 input = _moveAction.ReadValue<Vector2>();
+            Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
 
             _playerInputPort?.OnMoveInput(input, Time.deltaTime);
         }
 
         private void CreateMoveEvent()
         {
-            var moveHandler = new InputEventHandler(MOVE);
+            _moveHandler = new InputEventHandler(MOVE);
 
-            moveHandler.OnPerformed += OnMoveStarted;
+            _moveHandler.OnPerformed += OnMoveStarted;
 
-            moveHandler.OnCanceled += OnMoveCanceled;
+            _moveHandler.OnCanceled += OnMoveCanceled;
 
-            _handlers.Add(moveHandler);
+            _handlers.Add(_moveHandler);
         }
 
         private void OnMoveStarted(InputAction.CallbackContext context)
         {
-            if(_moveAction == null)
-            {
-                _moveAction = context.action;
-            }
             if (_isMoveActive == true) return;
             _isMoveActive = true;
         }
 
         private void OnMoveCanceled(InputAction.CallbackContext context)
         {
+            if (_isMoveActive == false) return;
             _isMoveActive = false;
 
             _playerInputPort?.OnMoveInput(Vector2.zero, Time.deltaTime);
