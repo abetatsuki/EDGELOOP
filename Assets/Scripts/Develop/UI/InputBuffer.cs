@@ -1,4 +1,5 @@
 ﻿using Develop.Interface;
+using Develop.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
@@ -11,18 +12,18 @@ namespace Develop.UI
     /// </summary>
     public class InputBuffer : MonoBehaviour
     {
-        public void Init(IPlayerInputReceiver receiver)
+        public void Init(IPlayerInputPort presenter)
         {
-            _receiver = receiver;
+            _playerInputPort = presenter;
         }
 
-        private IPlayerInputReceiver _receiver;
+        private IPlayerInputPort _playerInputPort;
         private PlayerInput _playerInput;
 
         private const string MOVE = "Move";
 
-        private InputAction _moveAction;
         private bool _isMoveActive;
+        private InputEventHandler _moveHandler;
 
         private List<InputEventHandler> _handlers = new List<InputEventHandler>();
 
@@ -37,36 +38,36 @@ namespace Develop.UI
 
         private void Update()
         {
-            if (!_isMoveActive || _moveAction == null) return;
+            if (!_isMoveActive ) return;
 
-            Vector2 input = _moveAction.ReadValue<Vector2>();
+            Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
 
-            _receiver?.OnMoveInput(input);
+            _playerInputPort?.OnMoveInput(input, Time.deltaTime);
         }
 
         private void CreateMoveEvent()
         {
-            var moveHandler = new InputEventHandler(MOVE);
+            _moveHandler = new InputEventHandler(MOVE);
 
-            moveHandler.OnPerformed += OnMoveStarted;
+            _moveHandler.OnPerformed += OnMoveStarted;
 
-            moveHandler.OnCanceled += OnMoveCanceled;
+            _moveHandler.OnCanceled += OnMoveCanceled;
 
-            _handlers.Add(moveHandler);
+            _handlers.Add(_moveHandler);
         }
 
         private void OnMoveStarted(InputAction.CallbackContext context)
         {
-            _moveAction = context.action;
-
+            if (_isMoveActive == true) return;
             _isMoveActive = true;
         }
 
         private void OnMoveCanceled(InputAction.CallbackContext context)
         {
+            if (_isMoveActive == false) return;
             _isMoveActive = false;
 
-            _receiver?.OnMoveInput(Vector2.zero);
+            _playerInputPort?.OnMoveInput(Vector2.zero, Time.deltaTime);
         }
 
         private void EventBind()

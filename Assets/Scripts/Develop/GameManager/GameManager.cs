@@ -1,28 +1,29 @@
-﻿using Develop.Data;
-using Develop.Interface;
-using Develop.Player;
+﻿using Develop.DI;
+using Develop.Player.Entity;
+using Develop.Player.View;
 using Develop.UI;
 using UnityEngine;
-[DefaultExecutionOrder(-100)]
-public class GameManager : MonoBehaviour
+
+namespace Develop.GameManager
 {
-    [SerializeField] private InputBuffer _inputBuffer;
-    private IMover _mover;
-    private IPlayerInputReceiver _receiver;
-    private IPlayerUpdatable _updatable;
-    private void Awake()
+    [DefaultExecutionOrder(-100)]
+    public class GameManager : MonoBehaviour
     {
-        _mover = new Move();
-        var presenter = new PlayerPresenter(_mover);
-        _receiver = presenter;
-        _updatable = presenter;
+        [SerializeField] private InputBuffer _inputBuffer;
+        [SerializeField] private PlayerView _playerView;
+        [SerializeField] private PlayerConfig _playerConfig;
 
-        _inputBuffer?.Init(_receiver);
-
+        private DataContainer _dataContainer;
+        private void Awake()
+        {
+            _dataContainer = new DataContainer();
+            // PlayerView implements IMovableBody
+            _dataContainer?.Init(_playerView, _playerConfig);
+            _inputBuffer?.Init(_dataContainer.PlayerPresenter);
+        }
+        private void Update()
+        {
+            _dataContainer?.PlayerPresenter.Update();
+        }
     }
-    private void Update()
-    {
-        _updatable.Update();
-    }
-
 }
