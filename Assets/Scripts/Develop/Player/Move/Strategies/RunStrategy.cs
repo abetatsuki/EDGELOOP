@@ -15,7 +15,7 @@ namespace Develop.Player.Move.Strategies
 
         public void Move(IMovableBody body, Vector2 input, float deltaTime)
         {
-            Vector3 direction = new Vector3(input.x, 0, input.y);
+            Vector3 direction = new Vector3(input.x, 0, input.y).normalized;
             body.Position += direction * _speed * deltaTime;
         }
         private readonly float _speed;
