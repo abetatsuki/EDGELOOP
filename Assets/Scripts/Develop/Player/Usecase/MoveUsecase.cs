@@ -25,6 +25,10 @@ namespace Develop.Player.Usecase
 
         public void Move(Vector2 input, float deltaTime)
         {
+            if (input == Vector2.zero)
+            {
+                //ここにIdle処理を描く。
+            }
             if (_playerEntity.IsSliding)
             {
                 _current.Move(_body,Vector2.zero, deltaTime);
