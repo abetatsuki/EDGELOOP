@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Develop.Interface;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Develop.Player.Entity
 {
@@ -9,13 +11,14 @@ namespace Develop.Player.Entity
 
         }
         public bool IsJumping { get; private set; }
-
+        public bool IsSliding { get; private set; }
 
         // 移動できるかどうかを判定する
         public bool CanMove()
         {
-            return !IsJumping;
+            return !IsJumping && !IsSliding;
         }
+
 
         // ジャンプ開始
         public void StartJump()
@@ -27,6 +30,15 @@ namespace Develop.Player.Entity
         public void Land()
         {
             IsJumping = false;
+        }
+        public void StartSliding()
+        {
+            IsSliding = true;
+        }
+
+        public void StopSliding()
+        {
+            IsSliding = false;
         }
     }
 
