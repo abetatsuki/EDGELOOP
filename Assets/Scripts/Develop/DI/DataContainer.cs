@@ -13,9 +13,10 @@ namespace Develop.DI
         public void Init(IMovableBody body, PlayerConfig config)
         {
             var PlayerEntity = new PlayerEntity();
+            var SlideStrategy = new SlideStrategy(config.Damping,config.SlidingEnd);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
             var runStrategy = new RunStrategy(config.RunSpeed);
-            var MovePlayer = new MovePlayerUseCase(body,walkStrategy,runStrategy);
+            var MovePlayer = new MovePlayerUseCase(PlayerEntity,body,walkStrategy,runStrategy);
             PlayerPresenter = new PlayerPresenter(MovePlayer);
         }
     }
