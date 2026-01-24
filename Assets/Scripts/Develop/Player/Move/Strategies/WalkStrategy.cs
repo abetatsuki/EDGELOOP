@@ -1,11 +1,11 @@
-using Develop.Interface;
+﻿using Develop.Interface;
+using Develop.Player.Entity;
 using UnityEngine;
 
 namespace Develop.Player.Move.Strategies
 {
     public class WalkStrategy : IMovementStrategy
     {
-        private readonly float _speed;
 
         public WalkStrategy(float speed)
         {
@@ -18,5 +18,6 @@ namespace Develop.Player.Move.Strategies
             // 単純な移動計算
             body.Position += direction * _speed * deltaTime;
         }
+        private readonly float _speed;
     }
 }
