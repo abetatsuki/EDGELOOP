@@ -22,12 +22,13 @@ namespace Develop.UI
 
         private const string MOVE = "Move";
         private const string SPRINT = "Sprint";
+        private const string SLIDE = "Slide";
 
         private bool _isMoveActive;
-        private InputEventHandler _moveHandler;
-        private InputEventHandler _sprintHandler;
-
-        private List<InputEventHandler> _handlers = new List<InputEventHandler>();
+        private InputAction _moveAction;
+        private InputAction _sprintAction;
+        private InputAction _slideAction;
+        
 
         private void Awake()
         {
@@ -42,28 +43,28 @@ namespace Develop.UI
         {
             if (!_isMoveActive ) return;
 
-            Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
+           // Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
+           Vector2 input = _moveAction.ReadValue<Vector2>();
 
             _playerInputPort?.OnMoveInput(input, Time.deltaTime);
         }
 
         private void CreateMoveEvent()
         {
-            _moveHandler = new InputEventHandler(MOVE);
+            _moveAction = _playerInput.actions[MOVE];
+            _sprintAction = _playerInput.actions[SPRINT];
+            _slideAction = _playerInput.actions[SLIDE];
 
-            _moveHandler.OnPerformed += OnMove;
+            _moveAction.performed += OnMove;
+            _moveAction.canceled += OnMove;
 
-            _moveHandler.OnCanceled += OnMove;
+            _sprintAction.performed += OnSprint;
+            _sprintAction.canceled += OnSprint;
 
-            _handlers.Add(_moveHandler);
+            _slideAction.performed += OnSlide;
+            _slideAction.canceled += OnSlide;
 
-            _sprintHandler = new InputEventHandler(SPRINT);
-
-            _sprintHandler.OnPerformed += OnSprint;
-
-            _sprintHandler.OnCanceled += OnSprint;
-
-           _handlers.Add(_sprintHandler);
+   
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -90,22 +91,20 @@ namespace Develop.UI
             }
         }
 
-        private void EventBind()
+        private void OnSlide(InputAction.CallbackContext context)
         {
-            foreach (var handler in _handlers)
+            if (context.performed)
             {
-                handler.Bind(_playerInput);
+                _playerInputPort.OnRunInput(true);
+            }
+            else if (context.canceled)
+            {
+                _playerInputPort.OnRunInput(false);
             }
         }
 
         private void OnDestroy()
         {
-            foreach (var handler in _handlers)
-            {
-                handler.Unbind();
-            }
-
-            _handlers.Clear();
         }
     }
 }
