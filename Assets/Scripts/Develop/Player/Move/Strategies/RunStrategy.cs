@@ -1,14 +1,13 @@
 ﻿using Develop.Interface;
-using Develop.Player.Entity;
 using UnityEngine;
 
 namespace Develop.Player.Move.Strategies
 {
     public class RunStrategy : IMovementStrategy
     {
-       
 
-        public RunStrategy( float speed)
+
+        public RunStrategy(float speed)
         {
             _speed = speed;
         }
