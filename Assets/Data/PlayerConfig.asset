@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad4c0ef3e2bed14a81f00d608c4445a, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: Assembly-CSharp::Develop.Player.Entity.PlayerConfig
-  WalkSpeed: 3
-  RunSpeed: 6
+  _walkSpeed: 1
+  _runSpeed: 3
+  _damping: 1
+  _slidingEnd: 2
