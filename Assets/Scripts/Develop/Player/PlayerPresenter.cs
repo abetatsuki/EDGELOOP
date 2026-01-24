@@ -25,7 +25,7 @@ namespace Develop.Player
 
         public void OnSlideInput(bool isSliding)
         {
-            if (isSliding) _movePlayerUseCase.Slide();
+            _movePlayerUseCase.Slide(isSliding);
         }
 
         private readonly MovePlayerUseCase _movePlayerUseCase;
