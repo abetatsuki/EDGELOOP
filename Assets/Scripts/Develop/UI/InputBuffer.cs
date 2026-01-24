@@ -35,8 +35,6 @@ namespace Develop.UI
             _playerInput = GetComponent<PlayerInput>();
 
             CreateMoveEvent();
-
-            EventBind();
         }
 
         private void Update()
@@ -95,11 +93,11 @@ namespace Develop.UI
         {
             if (context.performed)
             {
-                _playerInputPort.OnRunInput(true);
+                _playerInputPort.OnSlideInput(true);
             }
             else if (context.canceled)
             {
-                _playerInputPort.OnRunInput(false);
+                _playerInputPort.OnSlideInput(false);
             }
         }
 
