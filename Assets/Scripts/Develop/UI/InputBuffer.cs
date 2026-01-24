@@ -59,9 +59,11 @@ namespace Develop.UI
 
             _sprintHandler = new InputEventHandler(SPRINT);
 
-            _sprintHandler.OnPerformed 
+            _sprintHandler.OnPerformed += OnSprint;
 
-            
+            _sprintHandler.OnCanceled += OnSprint;
+
+           _handlers.Add(_sprintHandler);
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -76,7 +78,17 @@ namespace Develop.UI
             }
    
         }
-
+        private void OnSprint(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _playerInputPort.OnRunInput(true);
+            }
+            else if (context.canceled)
+            {
+                _playerInputPort.OnRunInput(false);
+            }
+        }
 
         private void EventBind()
         {
