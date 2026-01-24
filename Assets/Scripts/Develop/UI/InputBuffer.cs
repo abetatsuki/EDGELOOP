@@ -21,9 +21,11 @@ namespace Develop.UI
         private PlayerInput _playerInput;
 
         private const string MOVE = "Move";
+        private const string SPRINT = "Sprint";
 
         private bool _isMoveActive;
         private InputEventHandler _moveHandler;
+        private InputEventHandler _sprintHandler;
 
         private List<InputEventHandler> _handlers = new List<InputEventHandler>();
 
@@ -49,26 +51,32 @@ namespace Develop.UI
         {
             _moveHandler = new InputEventHandler(MOVE);
 
-            _moveHandler.OnPerformed += OnMoveStarted;
+            _moveHandler.OnPerformed += OnMove;
 
-            _moveHandler.OnCanceled += OnMoveCanceled;
+            _moveHandler.OnCanceled += OnMove;
 
             _handlers.Add(_moveHandler);
+
+            _sprintHandler = new InputEventHandler(SPRINT);
+
+            _sprintHandler.OnPerformed 
+
+            
         }
 
-        private void OnMoveStarted(InputAction.CallbackContext context)
+        private void OnMove(InputAction.CallbackContext context)
         {
-            if (_isMoveActive == true) return;
-            _isMoveActive = true;
+            if (context.performed)
+            {
+                _isMoveActive = true;
+            }
+            else if (context.canceled)
+            {
+                _isMoveActive= false;
+            }
+   
         }
 
-        private void OnMoveCanceled(InputAction.CallbackContext context)
-        {
-            if (_isMoveActive == false) return;
-            _isMoveActive = false;
-
-            _playerInputPort?.OnMoveInput(Vector2.zero, Time.deltaTime);
-        }
 
         private void EventBind()
         {
