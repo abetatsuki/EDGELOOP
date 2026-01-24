@@ -25,17 +25,27 @@ namespace Develop.Player.Usecase
 
         public void Move(Vector2 input, float deltaTime)
         {
-            _current.Move(_body, input, deltaTime);
+            if (_playerEntity.IsSliding)
+            {
+                _current.Move(_body,Vector2.zero, deltaTime);
+            }
+            if (_playerEntity.CanMove())
+            {
+                _current.Move(_body, input, deltaTime);
+            }
         }
-        public void Slide()
+        public void Slide(bool isSliding)
         {
-            if (_playerEntity.IsJumping) return;
-
-            Vector3 velocity = new Vector3(_body.Velocity.x, 0, _body.Velocity.z);
-
-            if (velocity.magnitude < 1) return;
-
-            _current = _slide; 
+            if (isSliding)
+            {
+                _playerEntity.StartSliding();
+                _current = _slide;
+            }
+            else if (!isSliding)
+            {
+                _playerEntity.StopSliding();
+                _current = _walk;
+            }
         }
         public void SetRunning(bool isRunning)
         {
