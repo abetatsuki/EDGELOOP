@@ -1,13 +1,14 @@
-using Develop.Interface;
+﻿using Develop.Interface;
+using Develop.Player.Entity;
 using UnityEngine;
 
 namespace Develop.Player.Move.Strategies
 {
     public class RunStrategy : IMovementStrategy
     {
-        private readonly float _speed;
+       
 
-        public RunStrategy(float speed)
+        public RunStrategy( float speed)
         {
             _speed = speed;
         }
@@ -17,5 +18,6 @@ namespace Develop.Player.Move.Strategies
             Vector3 direction = new Vector3(input.x, 0, input.y);
             body.Position += direction * _speed * deltaTime;
         }
+        private readonly float _speed;
     }
 }
