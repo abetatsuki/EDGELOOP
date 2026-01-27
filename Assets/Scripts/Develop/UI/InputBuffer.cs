@@ -1,8 +1,6 @@
 ﻿using Develop.Interface;
-using Develop.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 namespace Develop.UI
 {
@@ -10,82 +8,109 @@ namespace Develop.UI
     /// <summary>
     /// 入力をバッファし、ポーリング用の状態を管理するクラス
     /// </summary>
-    public class InputBuffer : MonoBehaviour
+    public class InputBuffer : IPlayerUpdatable, IAwakeable
     {
-        public void Init(IPlayerInputPort presenter)
+        public InputBuffer(IPlayer player, IPlayerInputPort presenter)
         {
+            _playerInput = player.PlayerInput;
             _playerInputPort = presenter;
+        }
+        public void Awake()
+        {
+            CreateMoveEvent();
+        }
+
+        public void Update()
+        {
+            if (!_isMoveActive) return;
+
+            // Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
+            Vector2 input = _moveAction.ReadValue<Vector2>();
+
+            _playerInputPort?.OnMoveInput(input, Time.deltaTime);
         }
 
         private IPlayerInputPort _playerInputPort;
         private PlayerInput _playerInput;
 
         private const string MOVE = "Move";
+        private const string SPRINT = "Sprint";
+        private const string SLIDE = "Slide";
+        private const string LOOK = "Look";
 
         private bool _isMoveActive;
-        private InputEventHandler _moveHandler;
+        private InputAction _moveAction;
+        private InputAction _sprintAction;
+        private InputAction _slideAction;
+        private InputAction _lookAction;
 
-        private List<InputEventHandler> _handlers = new List<InputEventHandler>();
-
-        private void Awake()
-        {
-            _playerInput = GetComponent<PlayerInput>();
-
-            CreateMoveEvent();
-
-            EventBind();
-        }
-
-        private void Update()
-        {
-            if (!_isMoveActive ) return;
-
-            Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
-
-            _playerInputPort?.OnMoveInput(input, Time.deltaTime);
-        }
 
         private void CreateMoveEvent()
         {
-            _moveHandler = new InputEventHandler(MOVE);
+            _moveAction = _playerInput.actions[MOVE];
+            _sprintAction = _playerInput.actions[SPRINT];
+            _slideAction = _playerInput.actions[SLIDE];
+            _lookAction = _playerInput.actions[LOOK];
 
-            _moveHandler.OnPerformed += OnMoveStarted;
+            _moveAction.performed += OnMove;
+            _moveAction.canceled += OnMove;
 
-            _moveHandler.OnCanceled += OnMoveCanceled;
+            _sprintAction.performed += OnSprint;
+            _sprintAction.canceled += OnSprint;
 
-            _handlers.Add(_moveHandler);
+            _slideAction.performed += OnSlide;
+            _slideAction.canceled += OnSlide;
+
+            _lookAction.performed += OnLook;
+            _lookAction.canceled += OnLook;
+
+
         }
 
-        private void OnMoveStarted(InputAction.CallbackContext context)
+        private void OnMove(InputAction.CallbackContext context)
         {
-            if (_isMoveActive == true) return;
-            _isMoveActive = true;
-        }
-
-        private void OnMoveCanceled(InputAction.CallbackContext context)
-        {
-            if (_isMoveActive == false) return;
-            _isMoveActive = false;
-
-            _playerInputPort?.OnMoveInput(Vector2.zero, Time.deltaTime);
-        }
-
-        private void EventBind()
-        {
-            foreach (var handler in _handlers)
+            if (context.performed)
             {
-                handler.Bind(_playerInput);
+                _isMoveActive = true;
             }
+            else if (context.canceled)
+            {
+                _isMoveActive = false;
+            }
+
+        }
+        private void OnSprint(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _playerInputPort.OnRunInput(true);
+            }
+            else if (context.canceled)
+            {
+                _playerInputPort.OnRunInput(false);
+            }
+        }
+
+        private void OnSlide(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _playerInputPort.OnSlideInput(true);
+            }
+            else if (context.canceled)
+            {
+                _playerInputPort.OnSlideInput(false);
+            }
+        }
+
+        private void OnLook(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+             _playerInputPort.OnLookInput(input);
         }
 
         private void OnDestroy()
         {
-            foreach (var handler in _handlers)
-            {
-                handler.Unbind();
-            }
-
-            _handlers.Clear();
         }
     }
 }

@@ -14,5 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Develop.Player.Entity.PlayerConfig
   _walkSpeed: 1
   _runSpeed: 3
-  _damping: 1
-  _slidingEnd: 2
+  _damping: 0.5
+  _endSpeed: 0
+  _maxAngel: 45
+  _lookSpeed: 0.1
+  _decelerationRate: 0.1
+  _groundCheckDistance: 0.3
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 8

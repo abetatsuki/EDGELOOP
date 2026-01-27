@@ -9,7 +9,6 @@ namespace Develop.GameManager
     [DefaultExecutionOrder(-100)]
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private InputBuffer _inputBuffer;
         [SerializeField] private PlayerView _playerView;
         [SerializeField] private PlayerConfig _playerConfig;
 
@@ -17,13 +16,8 @@ namespace Develop.GameManager
         private void Awake()
         {
             _dataContainer = new DataContainer();
-            // PlayerView implements IMovableBody
-            _dataContainer?.Init(_playerView, _playerConfig);
-            _inputBuffer?.Init(_dataContainer.PlayerPresenter);
-        }
-        private void Update()
-        {
-            _dataContainer?.PlayerPresenter.Update();
+            _dataContainer?.Init(_playerView, _playerConfig,_playerView);
+            _playerView.Init(_dataContainer.PlayerPresenter,_dataContainer.InputBuffer);
         }
     }
 }

@@ -12,32 +12,66 @@ namespace Develop.Player.Usecase
             PlayerEntity player,
             IMovableBody body,
             IMovementStrategy walk,
-            IMovementStrategy run)
+            IMovementStrategy run,
+            IMovementStrategy slide,
+            ILook look)
         {
             _playerEntity = player;
             _body = body;
             _walk = walk;
             _run = run;
+            _slide = slide;
+            _look = look;
             _current = _walk;
         }
 
-        // 走るかどうかを切り替える
+        public void Move(Vector2 input, float deltaTime)
+        {
+            if (input == Vector2.zero)
+            {
+                //ここにIdle処理を描く。
+            }
+            else if (_playerEntity.CanSliding())
+            {
+                _current.Move(_body, Vector2.zero, deltaTime);
+            }
+            else if (_playerEntity.CanMove())
+            {
+                _current.Move(_body, input, deltaTime);
+            }
+        }
+
+        public void Look(Vector2 input)
+        {
+            _look.Look(input);
+        }
+        public void Slide(bool isSliding)
+        {
+            if (isSliding)
+            {
+                _playerEntity.StartSliding();
+                _current = _slide;
+            }
+            else if (!isSliding)
+            {
+                _playerEntity.StopSliding();
+                _current = _walk;
+            }
+        }
         public void SetRunning(bool isRunning)
         {
+            if (_current == _slide) return;
             _current = isRunning ? _run : _walk;
         }
 
-        // 移動を実行する
-        public void Move(Vector2 input, float deltaTime)
-        {
-            _current.Move(_body, input, deltaTime);
-        }
 
         private readonly IMovableBody _body;
         private readonly IMovementStrategy _walk;
         private readonly IMovementStrategy _run;
+        private readonly IMovementStrategy _slide;
         private readonly PlayerEntity _playerEntity;
         private IMovementStrategy _current;
+        private ILook _look;
     }
 }
 
