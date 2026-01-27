@@ -13,7 +13,6 @@ namespace Develop.Player.Entity
         public bool IsJumping { get; private set; }
         public bool IsSliding { get; private set; }
 
-        // 移動できるかどうかを判定する
         public bool CanMove()
         {
             return !IsJumping && !IsSliding;
@@ -21,8 +20,7 @@ namespace Develop.Player.Entity
 
         public bool CanSliding()
         {
-            return !IsJumping;
-
+            return !IsJumping && IsSliding;
         }
 
         // ジャンプ開始
