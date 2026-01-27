@@ -19,7 +19,7 @@ namespace Develop.DI
             var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngel);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
             var runStrategy = new RunStrategy(config.RunSpeed);
-            var slideStrategy = new SlideStrategy(config.Damping,config.SlidingEnd);
+            var slideStrategy = new SlideStrategy(config.DecelerationRate,config.EndSpeed,config.GroundLayer,config.GroundCheckDistance);
             var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
             PlayerPresenter = new PlayerPresenter(movePlayer);
             InputBuffer = new InputBuffer(player,PlayerPresenter);
