@@ -31,7 +31,7 @@ namespace Develop.Player.Usecase
             {
                 //ここにIdle処理を描く。
             }
-            if (_playerEntity.CanSliding())
+            else if (_playerEntity.CanSliding())
             {
                 _current.Move(_body, Vector2.zero, deltaTime);
             }
