@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Develop.Player.Entity
 {
-    public class PlayerEntity 
+    public class PlayerEntity
     {
         public PlayerEntity()
         {
@@ -19,6 +19,11 @@ namespace Develop.Player.Entity
             return !IsJumping && !IsSliding;
         }
 
+        public bool CanSliding()
+        {
+            return !IsJumping;
+
+        }
 
         // ジャンプ開始
         public void StartJump()
