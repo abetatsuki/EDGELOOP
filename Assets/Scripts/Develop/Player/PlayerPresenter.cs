@@ -27,6 +27,10 @@ namespace Develop.Player
         {
             _movePlayerUseCase.Slide(isSliding);
         }
+        public void OnLookInput(Vector2 input)
+        {
+            _movePlayerUseCase.Look(input);
+        }
 
         private readonly MovePlayerUseCase _movePlayerUseCase;
     }
