@@ -14,9 +14,11 @@ namespace Develop.Player.Move.Strategies
 
         public void Move(IMovableBody body, Vector2 input, float deltaTime)
         {
-            Vector3 direction = new Vector3(input.x, 0, input.y).normalized;
-            // 単純な移動計算
-            body.Position += direction * _speed * deltaTime;
+            body.LinearDamping = 0f;
+            Vector3 inputDirection = new Vector3(input.x, 0, input.y).normalized;
+            Vector3 worldDirection = body.PlayerQuaternion * inputDirection;
+            Vector3 currentVelocity = body.Velocity;
+            body.Velocity = new Vector3(worldDirection.x * _speed, currentVelocity.y, worldDirection.z * _speed);
         }
         private readonly float _speed;
     }
