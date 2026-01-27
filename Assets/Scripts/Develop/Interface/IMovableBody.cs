@@ -8,5 +8,7 @@ namespace Develop.Interface
         Vector3 Velocity { get; set; }
 
         float LinearDamping { get; set; }
+        public Quaternion CameraQuaternion {  get; set; }
+        public Quaternion PlayerQuaternion { get; set; }
     }
 }
