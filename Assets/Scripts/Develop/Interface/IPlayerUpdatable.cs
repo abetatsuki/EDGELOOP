@@ -6,5 +6,10 @@ namespace Develop.Interface
         void Update();
     }
 
+    public interface IAwakeable
+    {
+        void Awake();
+    }
+
 }
 
