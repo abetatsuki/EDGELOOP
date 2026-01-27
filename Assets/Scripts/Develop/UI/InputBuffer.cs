@@ -1,8 +1,6 @@
 ﻿using Develop.Interface;
-using Develop.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 namespace Develop.UI
 {
@@ -10,11 +8,26 @@ namespace Develop.UI
     /// <summary>
     /// 入力をバッファし、ポーリング用の状態を管理するクラス
     /// </summary>
-    public class InputBuffer : MonoBehaviour
+    public class InputBuffer : IPlayerUpdatable, IAwakeable
     {
-        public void Init(IPlayerInputPort presenter)
+        public InputBuffer(IPlayer player, IPlayerInputPort presenter)
         {
+            _playerInput = player.PlayerInput;
             _playerInputPort = presenter;
+        }
+        public void Awake()
+        {
+            CreateMoveEvent();
+        }
+
+        public void Update()
+        {
+            if (!_isMoveActive) return;
+
+            // Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
+            Vector2 input = _moveAction.ReadValue<Vector2>();
+
+            _playerInputPort?.OnMoveInput(input, Time.deltaTime);
         }
 
         private IPlayerInputPort _playerInputPort;
@@ -23,35 +36,21 @@ namespace Develop.UI
         private const string MOVE = "Move";
         private const string SPRINT = "Sprint";
         private const string SLIDE = "Slide";
+        private const string LOOK = "Look";
 
         private bool _isMoveActive;
         private InputAction _moveAction;
         private InputAction _sprintAction;
         private InputAction _slideAction;
-        
+        private InputAction _lookAction;
 
-        private void Awake()
-        {
-            _playerInput = GetComponent<PlayerInput>();
-
-            CreateMoveEvent();
-        }
-
-        private void Update()
-        {
-            if (!_isMoveActive ) return;
-
-           // Vector2 input = _moveHandler.Action.ReadValue<Vector2>();
-           Vector2 input = _moveAction.ReadValue<Vector2>();
-
-            _playerInputPort?.OnMoveInput(input, Time.deltaTime);
-        }
 
         private void CreateMoveEvent()
         {
             _moveAction = _playerInput.actions[MOVE];
             _sprintAction = _playerInput.actions[SPRINT];
             _slideAction = _playerInput.actions[SLIDE];
+            _lookAction = _playerInput.actions[LOOK];
 
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
@@ -62,7 +61,10 @@ namespace Develop.UI
             _slideAction.performed += OnSlide;
             _slideAction.canceled += OnSlide;
 
-   
+            _lookAction.performed += OnLook;
+            _lookAction.canceled += OnLook;
+
+
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -73,9 +75,9 @@ namespace Develop.UI
             }
             else if (context.canceled)
             {
-                _isMoveActive= false;
+                _isMoveActive = false;
             }
-   
+
         }
         private void OnSprint(InputAction.CallbackContext context)
         {
@@ -99,6 +101,12 @@ namespace Develop.UI
             {
                 _playerInputPort.OnSlideInput(false);
             }
+        }
+
+        private void OnLook(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+             _playerInputPort.OnLookInput(input);
         }
 
         private void OnDestroy()
