@@ -13,13 +13,15 @@ namespace Develop.Player.Usecase
             IMovableBody body,
             IMovementStrategy walk,
             IMovementStrategy run,
-            IMovementStrategy slide)
+            IMovementStrategy slide,
+            ILook look)
         {
             _playerEntity = player;
             _body = body;
             _walk = walk;
             _run = run;
             _slide = slide;
+            _look = look;
             _current = _walk;
         }
 
@@ -31,12 +33,17 @@ namespace Develop.Player.Usecase
             }
             if (_playerEntity.IsSliding)
             {
-                _current.Move(_body,Vector2.zero, deltaTime);
+                _current.Move(_body, Vector2.zero, deltaTime);
             }
-            if (_playerEntity.CanMove())
+            else if (_playerEntity.CanMove())
             {
                 _current.Move(_body, input, deltaTime);
             }
+        }
+
+        public void Look(Vector2 input)
+        {
+            _look.Look(input);
         }
         public void Slide(bool isSliding)
         {
@@ -64,6 +71,7 @@ namespace Develop.Player.Usecase
         private readonly IMovementStrategy _slide;
         private readonly PlayerEntity _playerEntity;
         private IMovementStrategy _current;
+        private ILook _look;
     }
 }
 
