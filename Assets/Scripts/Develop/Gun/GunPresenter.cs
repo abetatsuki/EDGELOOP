@@ -1,22 +1,19 @@
-
-using Develop.GUn;
-using UnityEngine;
 namespace Develop.Gun
 {
     public class GunPresenter : IGunRequest
     {
-        public GunPresenter(GunEntity entity)
+        public GunPresenter(IWeapon weapon)
         {
-            _entity = entity;
+            _useCase = weapon;
         }
 
         public void OnFireRequest()
         {
-            
+            _useCase.TryFire();
         }
 
-        private GunEntity _entity;
-        private GunUseCase _useCase;
+        
+        private IWeapon _useCase;
     }
 
 }
