@@ -32,13 +32,6 @@ namespace Develop.Player.Move.Strategies
             float speed = body.Velocity.magnitude;
             speed *= Mathf.Exp(-_decelerationRate * deltaTime);
 
-            // 最低速度を下回ったらスライド終了とみなす
-            if (speed <= _endSpeed)
-            {
-                body.RequestEndMovementStrategy();
-                return;
-            }
-
             // Rigidbody にスライド速度を反映する
             body.Velocity = slideDirection * speed;
         }
