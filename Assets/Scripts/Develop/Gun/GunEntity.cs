@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace Develop.GUn
+namespace Develop.Gun
 {
     public class GunEntity
     {
