@@ -25,10 +25,15 @@ namespace Develop.Gun
             get => _tryTf.localRotation;
             set => _tryTf.localRotation = value;
         }
-
+        public ParticleSystem ParticleSystem
+        {
+            get => _particleSystem;
+        }
         [SerializeField] private Transform _firePosition;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
+        private ParticleSystem _particleSystem => particleSystem??=GetComponentInChildren<ParticleSystem>();
+        private ParticleSystem particleSystem;
 
         private void OnDrawGizmos()
         {
