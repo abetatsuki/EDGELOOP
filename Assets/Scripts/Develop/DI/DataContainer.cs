@@ -26,13 +26,13 @@ namespace Develop.DI
             var slideStrategy = new SlideStrategy(config.DecelerationRate,config.EndSpeed,config.GroundLayer,config.GroundCheckDistance);
             var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
             PlayerPresenter = new PlayerPresenter(movePlayer);
-            InputBuffer = new InputBuffer(player,PlayerPresenter);
 
-            var gunEntity = new GunEntity();
+            var gunEntity = new GunEntity(gunConfig.Ammo);
             var gunFire = new GunFire();
             var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView);
             GunPresenter = new GunPresenter(gun);
 
+            InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
         }
     }
 }
