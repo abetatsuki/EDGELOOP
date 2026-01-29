@@ -1,5 +1,6 @@
 using Develop.Gun.Interface;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 namespace Develop.Gun
 {
     public class GunView : MonoBehaviour, IGunView
@@ -11,8 +12,8 @@ namespace Develop.Gun
         }
         public Vector3 FirePosition
         {
-            get => _firePosition.localPosition;
-            set => _firePosition.localPosition = value;
+            get => _firePosition.position;
+            set => _firePosition.position= value;
 
         }
         public Vector3 Forward
@@ -24,9 +25,20 @@ namespace Develop.Gun
             get => _tryTf.localRotation;
             set => _tryTf.localRotation = value;
         }
+
         [SerializeField] private Transform _firePosition;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
+
+        private void OnDrawGizmos()
+        {
+
+            if (Physics.Raycast(_firePosition.position, transform.forward, out RaycastHit hit))
+            {
+                Gizmos.DrawLine(_firePosition.position, hit.point);
+                Gizmos.DrawSphere(hit.point, 0.05f);
+            }
+        }
     }
 
 }
