@@ -29,7 +29,9 @@ namespace Develop.DI
 
             var gunEntity = new GunEntity(gunConfig.Ammo);
             var gunFire = new GunFire();
-            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView);
+            var gunEffect = new GunEffect(gunView);
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect);
+            gun.Init();
             GunPresenter = new GunPresenter(gun);
 
             InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
