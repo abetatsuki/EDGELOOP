@@ -1,4 +1,6 @@
-﻿using Develop.Interface;
+﻿using Develop.Gun;
+using Develop.Gun.Interface;
+using Develop.Interface;
 using Develop.Player;
 using Develop.Player.Camera;
 using Develop.Player.Entity;
@@ -11,9 +13,11 @@ namespace Develop.DI
     public class DataContainer
     {
         public PlayerPresenter PlayerPresenter { get; private set; }
+
+        public GunPresenter GunPresenter { get; private set; }
         public InputBuffer InputBuffer { get; private set; }
 
-        public void Init(IMovableBody body, PlayerConfig config,IPlayer player)
+        public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
         {
             var playerEntity = new PlayerEntity();
             var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngel);
@@ -23,6 +27,12 @@ namespace Develop.DI
             var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
             PlayerPresenter = new PlayerPresenter(movePlayer);
             InputBuffer = new InputBuffer(player,PlayerPresenter);
+
+            var gunEntity = new GunEntity();
+            var gunFire = new GunFire();
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView);
+            GunPresenter = new GunPresenter(gun);
+
         }
     }
 }
