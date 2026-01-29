@@ -10,7 +10,7 @@ namespace Develop.Player.Entity
         public float Damping => _damping;
         public float EndSpeed => _endSpeed;
 
-        public float MaxAngel => _maxAngel;
+        public float MaxAngle => _maxAngel;
         public float LookSpeed => _lookSpeed;
         public float DecelerationRate => _decelerationRate;
         public float GroundCheckDistance => _groundCheckDistance;

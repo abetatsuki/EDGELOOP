@@ -1,4 +1,6 @@
-﻿using Develop.Interface;
+﻿using Develop.Gun;
+using Develop.Gun.Interface;
+using Develop.Interface;
 using Develop.Player;
 using Develop.Player.Camera;
 using Develop.Player.Entity;
@@ -11,18 +13,28 @@ namespace Develop.DI
     public class DataContainer
     {
         public PlayerPresenter PlayerPresenter { get; private set; }
+
+        public GunPresenter GunPresenter { get; private set; }
         public InputBuffer InputBuffer { get; private set; }
 
-        public void Init(IMovableBody body, PlayerConfig config,IPlayer player)
+        public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
         {
             var playerEntity = new PlayerEntity();
-            var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngel);
+            var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngle);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
             var runStrategy = new RunStrategy(config.RunSpeed);
             var slideStrategy = new SlideStrategy(config.DecelerationRate,config.EndSpeed,config.GroundLayer,config.GroundCheckDistance);
             var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
             PlayerPresenter = new PlayerPresenter(movePlayer);
-            InputBuffer = new InputBuffer(player,PlayerPresenter);
+
+            var gunEntity = new GunEntity(gunConfig.Ammo);
+            var gunFire = new GunFire();
+            var gunEffect = new GunEffect(gunView);
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect);
+            gun.Init();
+            GunPresenter = new GunPresenter(gun);
+
+            InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
         }
     }
 }
