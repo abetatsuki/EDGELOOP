@@ -1,21 +1,27 @@
-﻿using UnityEngine;
+﻿using Develop.Gun.Interface;
+using Develop.Interface;
+using UnityEngine;
 namespace Develop.Gun
 {
     public class GunUseCase : IWeapon
     {
 
         public GunUseCase(GunEntity entity,
-            GunFire fire)
+            GunFire fire,
+            GunConfig config,
+            IGunView view)
         {
             _entity = entity;
             _fire = fire;
+            _config = config;
+            _view = view;
         }
         public void TryFire()
         {
             if(_entity.IsFiring())
             {
                 _entity.DecreaseAmmo();
-                _fire.Fire();
+                _fire.Fire(_view.FirePosition,_view.Forward,_config.MaxDistance,_config.PlayerMask);
             }
             else
             {
@@ -24,5 +30,7 @@ namespace Develop.Gun
         }
         private GunEntity _entity;
         private GunFire _fire;
+        private GunConfig _config;
+        private IGunView _view;
     }
 }
