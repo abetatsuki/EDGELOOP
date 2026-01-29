@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 namespace Develop.Gun
 {
     public class GunUseCase : IWeapon
@@ -19,7 +19,7 @@ namespace Develop.Gun
             }
             else
             {
-                Debug.Log("’e‚Ì”­ËğŒ‚ğ–‚½‚µ‚Ä‚¢‚Ü‚¹‚ñ");
+                Debug.Log("å¼¾ã®ç™ºå°„æ¡ä»¶ã‚’æº€ãŸã—ã¦ã„ã¾ã›ã‚“");
             }
         }
         private GunEntity _entity;
