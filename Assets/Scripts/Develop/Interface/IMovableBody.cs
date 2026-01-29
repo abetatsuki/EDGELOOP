@@ -9,6 +9,7 @@ namespace Develop.Interface
 
         float LinearDamping { get; set; }
         public Quaternion CameraQuaternion {  get; set; }
+        public Vector3  Forward { get;}
         public Quaternion PlayerQuaternion { get; set; }
     }
 }
