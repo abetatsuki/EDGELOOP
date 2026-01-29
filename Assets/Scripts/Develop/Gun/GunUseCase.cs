@@ -16,6 +16,10 @@ namespace Develop.Gun
             _config = config;
             _view = view;
         }
+        public void Init()
+        {
+            //ここでイベント登録などを行う。
+        }
         public void TryFire()
         {
             if(_entity.IsFiring())
