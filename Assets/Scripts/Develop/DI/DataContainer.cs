@@ -20,7 +20,7 @@ namespace Develop.DI
         public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
         {
             var playerEntity = new PlayerEntity();
-            var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngel);
+            var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngle);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
             var runStrategy = new RunStrategy(config.RunSpeed);
             var slideStrategy = new SlideStrategy(config.DecelerationRate,config.EndSpeed,config.GroundLayer,config.GroundCheckDistance);
