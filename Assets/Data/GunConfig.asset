@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b54fd550249ce1418f4aee05e8a9299, type: 3}
   m_Name: GunConfig
   m_EditorClassIdentifier: Assembly-CSharp::GunConfig
+  _ammo: 100
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
-  _maxDistance: 0
+    m_Bits: 1
+  _maxDistance: 100
