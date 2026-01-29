@@ -22,4 +22,4 @@ MonoBehaviour:
   _groundCheckDistance: 0.3
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0

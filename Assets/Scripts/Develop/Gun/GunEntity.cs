@@ -3,8 +3,9 @@ namespace Develop.Gun
 {
     public class GunEntity
     {
-        public GunEntity()
+        public GunEntity(int ammo)
         {
+            _currentAmmo = ammo;
         }
         public bool IsFiring()
         {

@@ -1,4 +1,5 @@
-﻿using Develop.Interface;
+﻿using Develop.Gun;
+using Develop.Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,10 +11,11 @@ namespace Develop.UI
     /// </summary>
     public class InputBuffer : IPlayerUpdatable, IAwakeable
     {
-        public InputBuffer(IPlayer player, IPlayerInputPort presenter)
+        public InputBuffer(IPlayer player, IPlayerInputPort presenter,IGunRequest request)
         {
             _playerInput = player.PlayerInput;
             _playerInputPort = presenter;
+            _gunRequest = request;
         }
         public void Awake()
         {
@@ -31,18 +33,21 @@ namespace Develop.UI
         }
 
         private IPlayerInputPort _playerInputPort;
+        private IGunRequest _gunRequest;
         private PlayerInput _playerInput;
 
         private const string MOVE = "Move";
         private const string SPRINT = "Sprint";
         private const string SLIDE = "Slide";
         private const string LOOK = "Look";
+        private const string ATTACK = "Attack";
 
         private bool _isMoveActive;
         private InputAction _moveAction;
         private InputAction _sprintAction;
         private InputAction _slideAction;
         private InputAction _lookAction;
+        private InputAction _attackAction;
 
 
         private void CreateMoveEvent()
@@ -51,6 +56,7 @@ namespace Develop.UI
             _sprintAction = _playerInput.actions[SPRINT];
             _slideAction = _playerInput.actions[SLIDE];
             _lookAction = _playerInput.actions[LOOK];
+            _attackAction = _playerInput.actions[ATTACK];
 
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
@@ -64,6 +70,7 @@ namespace Develop.UI
             _lookAction.performed += OnLook;
             _lookAction.canceled += OnLook;
 
+            _attackAction.performed += OnAttack;
 
         }
 
@@ -109,6 +116,17 @@ namespace Develop.UI
              _playerInputPort.OnLookInput(input);
         }
 
+        private void OnAttack(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+               _gunRequest.OnFireRequest();
+            }
+            else if (context.canceled)
+            {
+                
+            }
+        }
         private void OnDestroy()
         {
         }

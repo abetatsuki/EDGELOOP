@@ -34,6 +34,11 @@ namespace Develop.Player.View
             set => _camera.localRotation = value;
         }
 
+        public Vector3 Forward
+        {
+            get => _camera.forward;
+        }
+
         public float LinearDamping
         {
             get => Rb.linearDamping;
