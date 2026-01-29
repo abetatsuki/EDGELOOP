@@ -11,7 +11,7 @@ namespace Develop.Gun
             {
                 Debug.Log($"Hit: {hit.collider.name} at {hit.point}");
                 // TODO: 敵にダメージを与える処理や、着弾エフェクトの生成
-                OnFire?.Invoke(origin,direction);
+                OnFire?.Invoke(origin,hit.point);
             }
             else
             {
