@@ -9,16 +9,19 @@ namespace Develop.Gun
         public GunUseCase(GunEntity entity,
             GunFire fire,
             GunConfig config,
-            IGunView view)
+            IGunView view,
+            GunEffect effect)
         {
             _entity = entity;
             _fire = fire;
             _config = config;
             _view = view;
+            _effect = effect;
         }
         public void Init()
         {
             //ここでイベント登録などを行う。
+            _fire.OnFire += _effect.FireEffect;
         }
         public void TryFire()
         {
@@ -36,5 +39,6 @@ namespace Develop.Gun
         private GunFire _fire;
         private GunConfig _config;
         private IGunView _view;
+        private GunEffect _effect;
     }
 }
