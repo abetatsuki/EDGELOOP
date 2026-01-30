@@ -22,7 +22,12 @@ namespace Develop.Gun
                 _currentAmmo--;
             }
         }
+        public void SetAiming(bool isAiming)
+        {
+            _isAiming = isAiming;
+        }
         private int _currentAmmo;
+        private bool _isAiming;
 
 
     }
