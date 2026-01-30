@@ -74,6 +74,7 @@ namespace Develop.UI
             _lookAction.canceled += OnLook;
 
             _attackAction.performed += OnAttack;
+            _attackAction.canceled += OnAttack;
 
             _aimAction.performed += OnAim;
             _aimAction.canceled += OnAim;
@@ -126,11 +127,11 @@ namespace Develop.UI
         {
             if (context.performed)
             {
-               _gunRequest.OnFireRequest();
+               _gunRequest.OnFireRequest(true);
             }
             else if (context.canceled)
             {
-                
+                _gunRequest.OnFireRequest(false);
             }
         }
         public void OnAim(InputAction.CallbackContext context)
