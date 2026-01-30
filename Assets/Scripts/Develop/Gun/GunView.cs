@@ -29,6 +29,18 @@ namespace Develop.Gun
         {
             get => _particleSystem;
         }
+        public Vector3 AimPosition
+        {
+            get => _aimPosition.position;
+            set => _aimPosition.position = value;
+        }
+        public Vector3 DefaultPosition
+        {
+            get => _defaultPosition.position;
+            set => _defaultPosition.position = value;
+        }
+        [SerializeField] private Transform _aimPosition;
+        [SerializeField] private Transform _defaultPosition;
         [SerializeField] private Transform _firePosition;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
