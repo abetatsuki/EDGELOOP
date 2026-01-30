@@ -2,7 +2,7 @@ namespace Develop.Gun
 {
     public interface IGunRequest
     {
-        void OnFireRequest();
+        void OnFireRequest(bool isFiring);
         void OnAimRequest(bool isAim);
         void Update();
     }
