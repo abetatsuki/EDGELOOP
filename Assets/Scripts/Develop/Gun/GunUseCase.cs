@@ -25,6 +25,7 @@ namespace Develop.Gun
         {
             //ここでイベント登録などを行う。
             _fire.OnFire += _effect.FireEffect;
+            _fire.OnHit += _effect.HitEffect;
         }
         public void TryFire()
         {
