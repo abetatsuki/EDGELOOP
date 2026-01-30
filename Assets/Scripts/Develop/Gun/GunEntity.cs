@@ -3,25 +3,26 @@ namespace Develop.Gun
 {
     public class GunEntity
     {
-        public GunEntity(int ammo)
+   
+        public GunEntity(GunConfig config)
         {
-            _currentAmmo = ammo;
+            _currentAmmo = config.Ammo;
         }
-        public bool IsFiring()
+
+        public bool CanFire()
         {
-            return  _currentAmmo > 0;
+            return _currentAmmo > 0 && Time.time >= _nextFireTime;
         }
-        public void SetCurrentAmmo(int ammo)
-        {
-            _currentAmmo = ammo;
-        }
-        public void DecreaseAmmo()
+
+        public void RecordFire(float fireRate)
         {
             if (_currentAmmo > 0)
             {
                 _currentAmmo--;
+                _nextFireTime = Time.time + 1f / fireRate;
             }
         }
+        
         public void SetAiming(bool isAiming)
         {
             _isAiming = isAiming;
@@ -30,9 +31,9 @@ namespace Develop.Gun
         {
             return _isAiming;
         }
+
+        private float _nextFireTime;
         private int _currentAmmo;
         private bool _isAiming;
-
-
     }
 }
