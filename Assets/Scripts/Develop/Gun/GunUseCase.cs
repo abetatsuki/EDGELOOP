@@ -19,6 +19,7 @@ namespace Develop.Gun
             _view = view;
             _effect = effect;
             _aim = aim;
+           
         }
         public void Init()
         {
@@ -27,14 +28,14 @@ namespace Develop.Gun
         }
         public void TryFire()
         {
-            if (_entity.IsFiring())
+            if (_entity.CanFire())
             {
-                _entity.DecreaseAmmo();
+                _entity.RecordFire(_config.FireRate);
                 _fire.Fire(_view.FirePosition, _view.Forward, _config.MaxDistance, _config.PlayerMask);
             }
             else
             {
-                Debug.Log("弾の発射条件を満たしていません");
+                //Debug.Log("弾の発射条件を満たしていません"); // This can be noisy, commenting out.
             }
         }
         public void TryAim(bool isAim)
@@ -42,6 +43,7 @@ namespace Develop.Gun
             _entity.SetAiming(isAim);
             _aim.Aim(_entity.IsAiming());
         }
+        
         private GunAim _aim;
         private GunEntity _entity;
         private GunFire _fire;
