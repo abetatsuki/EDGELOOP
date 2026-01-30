@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Develop.Gun
 {
     public class GunPresenter : IGunRequest
@@ -7,9 +9,9 @@ namespace Develop.Gun
             _useCase = weapon;
         }
 
-        public void OnFireRequest()
+        public void OnFireRequest(bool isFiring)
         {
-            _useCase.TryFire();
+            _isFiring = isFiring;
         }
         public void OnAimRequest(bool isAim)
         {
@@ -17,9 +19,15 @@ namespace Develop.Gun
         }
         public void Update()
         {
+            Debug.Log(_isFiring);
+            if (_isFiring)
+            {
+                _useCase.TryFire();
+            }
             _useCase.TryAim(_isAiming);
         }
 
+        private bool _isFiring;
         private bool _isAiming;
         private IWeapon _useCase;
     }
