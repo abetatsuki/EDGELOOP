@@ -11,7 +11,6 @@ namespace Develop.Gun
         }
         public void Aim(bool isAim)
         {
-            Debug.Log(isAim);
             Vector3 targetPosition = isAim ? _view.AimPosition : _view.DefaultPosition;
             _view.Position = Vector3.SmoothDamp(_view.Position,targetPosition,ref _velocity,1.0f/_aimSensitivity);
 

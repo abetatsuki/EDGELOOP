@@ -27,7 +27,7 @@ namespace Develop.DI
             var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
             PlayerPresenter = new PlayerPresenter(movePlayer);
 
-            var gunEntity = new GunEntity(gunConfig.Ammo);
+            var gunEntity = new GunEntity(gunConfig);
             var gunFire = new GunFire();
             var gunEffect = new GunEffect(gunView);
             var gunAim = new GunAim(gunView,gunConfig.AimToSpeed);
