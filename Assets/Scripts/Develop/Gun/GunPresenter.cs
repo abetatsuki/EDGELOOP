@@ -19,7 +19,6 @@ namespace Develop.Gun
         }
         public void Update()
         {
-            Debug.Log(_isFiring);
             if (_isFiring)
             {
                 _useCase.TryFire();
