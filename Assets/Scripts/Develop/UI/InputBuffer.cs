@@ -41,6 +41,7 @@ namespace Develop.UI
         private const string SLIDE = "Slide";
         private const string LOOK = "Look";
         private const string ATTACK = "Attack";
+        private const string AIM = "Aim";
 
         private bool _isMoveActive;
         private InputAction _moveAction;
@@ -48,6 +49,7 @@ namespace Develop.UI
         private InputAction _slideAction;
         private InputAction _lookAction;
         private InputAction _attackAction;
+        private InputAction _aimAction;
 
 
         private void CreateMoveEvent()
@@ -57,6 +59,7 @@ namespace Develop.UI
             _slideAction = _playerInput.actions[SLIDE];
             _lookAction = _playerInput.actions[LOOK];
             _attackAction = _playerInput.actions[ATTACK];
+            _aimAction = _playerInput.actions[AIM];
 
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
@@ -71,6 +74,9 @@ namespace Develop.UI
             _lookAction.canceled += OnLook;
 
             _attackAction.performed += OnAttack;
+
+            _aimAction.performed += OnAim;
+            _aimAction.canceled += OnAim;
 
         }
 
@@ -125,6 +131,17 @@ namespace Develop.UI
             else if (context.canceled)
             {
                 
+            }
+        }
+        public void OnAim(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _gunRequest.OnAimRequest(true);
+            }
+            else if (context.canceled)
+            {
+                _gunRequest.OnAimRequest(false);
             }
         }
         private void OnDestroy()

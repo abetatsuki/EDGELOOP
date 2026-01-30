@@ -15,12 +15,14 @@ namespace Develop.GameManager
         [SerializeField] private GunConfig _gunConfig;
         [SerializeField] private PlayerConfig _playerConfig;
 
+
         private DataContainer _dataContainer;
         private void Awake()
         {
             _dataContainer = new DataContainer();
             _dataContainer?.Init(_playerView, _playerConfig,_playerView,_gunConfig,_gunView);
             _playerView.Init(_dataContainer.PlayerPresenter,_dataContainer.InputBuffer);
+            _gunView.Init(_dataContainer.GunPresenter);
         }
     }
 }

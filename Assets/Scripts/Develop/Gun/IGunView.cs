@@ -10,5 +10,8 @@ namespace Develop.Gun.Interface
         Vector3 Forward { get; }
         Quaternion Rotation { get; set; }
         ParticleSystem ParticleSystem { get; }
+
+        Vector3 AimPosition { get; set; }
+        Vector3 DefaultPosition { get; set; }
     }
 }
