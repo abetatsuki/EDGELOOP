@@ -1,10 +1,13 @@
 using Develop.Gun.Interface;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 namespace Develop.Gun
 {
     public class GunView : MonoBehaviour, IGunView
     {
+        public void Init(GunPresenter presenter)
+        {
+            _presenter = presenter;
+        }
         public Vector3 Position
         {
             get => _tryTf.localPosition;
@@ -13,7 +16,7 @@ namespace Develop.Gun
         public Vector3 FirePosition
         {
             get => _firePosition.position;
-            set => _firePosition.position= value;
+            set => _firePosition.position = value;
 
         }
         public Vector3 Forward
@@ -31,20 +34,22 @@ namespace Develop.Gun
         }
         public Vector3 AimPosition
         {
-            get => _aimPosition.position;
-            set => _aimPosition.position = value;
+            get => _aimPosition.localPosition;
+            set => _aimPosition.localPosition= value;
         }
         public Vector3 DefaultPosition
         {
-            get => _defaultPosition.position;
-            set => _defaultPosition.position = value;
+            get => _defaultPosition.localPosition;
+            set => _defaultPosition.localPosition = value;
         }
         [SerializeField] private Transform _aimPosition;
         [SerializeField] private Transform _defaultPosition;
         [SerializeField] private Transform _firePosition;
+
+        private GunPresenter _presenter;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
-        private ParticleSystem _particleSystem => particleSystem??=GetComponentInChildren<ParticleSystem>();
+        private ParticleSystem _particleSystem => particleSystem ??= GetComponentInChildren<ParticleSystem>();
         private ParticleSystem particleSystem;
 
         private void OnDrawGizmos()
@@ -55,6 +60,10 @@ namespace Develop.Gun
                 Gizmos.DrawLine(_firePosition.position, hit.point);
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
+        }
+        private void Update()
+        {
+            _presenter.Update();
         }
     }
 
