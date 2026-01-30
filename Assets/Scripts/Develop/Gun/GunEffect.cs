@@ -6,7 +6,7 @@ namespace Develop.Gun
     {
         public GunEffect(IGunView view )
         {
-            _particleSystem = view.ParticleSystem;
+            _particleSystem = view.MuzzleFlash;
         }
 
         public void FireEffect(Vector3 input)

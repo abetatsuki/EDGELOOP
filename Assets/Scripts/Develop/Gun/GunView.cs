@@ -28,9 +28,13 @@ namespace Develop.Gun
             get => _tryTf.localRotation;
             set => _tryTf.localRotation = value;
         }
-        public ParticleSystem ParticleSystem
+        public ParticleSystem MuzzleFlash
         {
             get => _muzuleFlash;
+        }
+        public ParticleSystem BulletHole
+        {
+            get => _bulletHole;
         }
         public Vector3 AimPosition
         {
