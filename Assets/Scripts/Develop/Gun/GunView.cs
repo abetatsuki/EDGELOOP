@@ -30,7 +30,7 @@ namespace Develop.Gun
         }
         public ParticleSystem ParticleSystem
         {
-            get => _particleSystem;
+            get => _muzuleFlash;
         }
         public Vector3 AimPosition
         {
@@ -49,8 +49,10 @@ namespace Develop.Gun
         private GunPresenter _presenter;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
-        private ParticleSystem _particleSystem => particleSystem ??= GetComponentInChildren<ParticleSystem>();
-        private ParticleSystem particleSystem;
+        [SerializeField]
+        private ParticleSystem _muzuleFlash;
+        [SerializeField]
+        private ParticleSystem _bulletHole;
 
         private void OnDrawGizmos()
         {
