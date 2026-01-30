@@ -32,9 +32,9 @@ namespace Develop.Gun
         {
             get => _muzuleFlash;
         }
-        public ParticleSystem BulletHole
+        public GameObject BulleHolePrefab
         {
-            get => _bulletHole;
+            get => _bulletHolePrefab;
         }
         public Vector3 AimPosition
         {
@@ -56,14 +56,14 @@ namespace Develop.Gun
         [SerializeField]
         private ParticleSystem _muzuleFlash;
         [SerializeField]
-        private ParticleSystem _bulletHole;
+        private GameObject _bulletHolePrefab;
 
         private void OnDrawGizmos()
         {
 
-            if (Physics.Raycast(_firePosition.position, transform.forward, out RaycastHit hit))
+            if (Physics.Raycast(FirePosition, Forward, out RaycastHit hit))
             {
-                Gizmos.DrawLine(_firePosition.position, hit.point);
+                Gizmos.DrawLine(FirePosition, hit.point);
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
         }
