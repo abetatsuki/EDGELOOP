@@ -11,8 +11,16 @@ namespace Develop.Gun
         {
             _useCase.TryFire();
         }
+        public void OnAimRequest(bool isAim)
+        {
+            _isAiming = isAim;
+        }
+        public void Update()
+        {
+            _useCase.TryAim(_isAiming);
+        }
 
-        
+        private bool _isAiming;
         private IWeapon _useCase;
     }
 
