@@ -10,13 +10,15 @@ namespace Develop.Gun
             GunFire fire,
             GunConfig config,
             IGunView view,
-            GunEffect effect)
+            GunEffect effect,
+            GunAim aim)
         {
             _entity = entity;
             _fire = fire;
             _config = config;
             _view = view;
             _effect = effect;
+            _aim = aim;
         }
         public void Init()
         {
@@ -25,16 +27,22 @@ namespace Develop.Gun
         }
         public void TryFire()
         {
-            if(_entity.IsFiring())
+            if (_entity.IsFiring())
             {
                 _entity.DecreaseAmmo();
-                _fire.Fire(_view.FirePosition,_view.Forward,_config.MaxDistance,_config.PlayerMask);
+                _fire.Fire(_view.FirePosition, _view.Forward, _config.MaxDistance, _config.PlayerMask);
             }
             else
             {
                 Debug.Log("弾の発射条件を満たしていません");
             }
         }
+        public void TryAim(bool isAim)
+        {
+            _entity.SetAiming(isAim);
+            _aim.Aim(_entity.IsAiming());
+        }
+        private GunAim _aim;
         private GunEntity _entity;
         private GunFire _fire;
         private GunConfig _config;
