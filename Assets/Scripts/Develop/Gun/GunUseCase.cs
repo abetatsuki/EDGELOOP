@@ -31,7 +31,7 @@ namespace Develop.Gun
         {
             if (_entity.CanFire())
             {
-                _entity.RecordFire(_config.FireRate);
+                _entity.RecordFire(Time.time);
                 _fire.Fire(_view.FirePosition, _view.Forward, _config.MaxDistance, _config.PlayerMask);
             }
             else
