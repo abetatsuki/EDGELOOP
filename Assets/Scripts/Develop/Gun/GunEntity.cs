@@ -6,23 +6,32 @@ namespace Develop.Gun
    
         public GunEntity(GunConfig config)
         {
-            _currentAmmo = config.Ammo;
+            _currentAmmo = config.MaxAmmo;
+            _maxAmmo = config.MaxAmmo;
+            _fireRate = 1/config.FireRate;
+
         }
 
         public bool CanFire()
         {
             return _currentAmmo > 0 && Time.time >= _nextFireTime;
         }
-
-        public void RecordFire(float fireRate)
+        public bool CanReload()
+        {
+            return !_isReloading && _currentAmmo < _maxAmmo;
+        }
+        public void RecordFire(float currentTime)
         {
             if (_currentAmmo > 0)
             {
                 _currentAmmo--;
-                _nextFireTime = Time.time + 1f / fireRate;
+                _nextFireTime = currentTime + _fireRate;
             }
         }
-        
+        public void SetReloading(bool isReloading)
+        {
+            _isReloading = isReloading;
+        }
         public void SetAiming(bool isAiming)
         {
             _isAiming = isAiming;
@@ -31,9 +40,15 @@ namespace Develop.Gun
         {
             return _isAiming;
         }
-
+        public bool IsReloading()
+        {
+            return _isReloading;
+        }
+        private bool _isReloading;
         private float _nextFireTime;
+        private float _fireRate;
         private int _currentAmmo;
+        private int _maxAmmo;
         private bool _isAiming;
     }
 }
