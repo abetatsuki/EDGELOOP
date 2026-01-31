@@ -35,7 +35,7 @@ namespace Develop.Gun
                 rotation);
 
             // Optional: auto-destroy after time
-            Object.Destroy(bulletHole, 10f);
+            Object.Destroy(bulletHole, 3f);
         }
 
         private readonly ParticleSystem _muzzleFlash;
