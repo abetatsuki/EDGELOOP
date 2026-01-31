@@ -14,7 +14,8 @@ namespace Develop.Gun
 
         public bool CanFire()
         {
-            return _currentAmmo > 0 && Time.time >= _nextFireTime;
+            Debug.Log($"{_currentAmmo} + {Time.time >=_nextFireTime} +{ _isReloading}");
+            return _currentAmmo > 0 && Time.time >= _nextFireTime && !_isReloading;
         }
         public bool CanReload()
         {
@@ -27,6 +28,12 @@ namespace Develop.Gun
                 _currentAmmo--;
                 _nextFireTime = currentTime + _fireRate;
             }
+        }
+        
+        public void Reload()
+        {
+            _currentAmmo = _maxAmmo;
+            Debug.Log("ƒŠƒ[ƒhŠ®—¹");
         }
         public void SetReloading(bool isReloading)
         {
@@ -44,6 +51,10 @@ namespace Develop.Gun
         {
             return _isReloading;
         }
+        
+        public int CurrentAmmo => _currentAmmo;
+        public int MaxAmmo => _maxAmmo;
+        
         private bool _isReloading;
         private float _nextFireTime;
         private float _fireRate;
