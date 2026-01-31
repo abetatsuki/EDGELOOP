@@ -8,7 +8,7 @@ namespace Develop.Gun
         public GunEffect(IGunView view)
         {
             _muzzleFlash = view.MuzzleFlash;
-            _bulletHolePrefab = view.BulleHolePrefab;
+            _bulletHolePrefab = view.BulletHolePrefab;
         }
 
         /// <summary>

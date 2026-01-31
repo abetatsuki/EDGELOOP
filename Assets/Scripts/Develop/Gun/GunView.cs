@@ -32,7 +32,7 @@ namespace Develop.Gun
         {
             get => _muzuleFlash;
         }
-        public GameObject BulleHolePrefab
+        public GameObject BulletHolePrefab
         {
             get => _bulletHolePrefab;
         }
