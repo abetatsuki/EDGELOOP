@@ -32,7 +32,8 @@ namespace Develop.Gun
             GameObject bulletHole = Object.Instantiate(
                 _bulletHolePrefab,
                 position,
-                rotation);
+                rotation,
+                hitTransform);
 
             // Optional: auto-destroy after time
             Object.Destroy(bulletHole, 3f);
