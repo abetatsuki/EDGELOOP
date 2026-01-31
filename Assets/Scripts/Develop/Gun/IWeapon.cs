@@ -4,5 +4,8 @@ namespace Develop.Gun
     {
         void TryFire();
         void TryAim(bool isAim);
+        void TryReload();
+        
+        void Update();
     }
 }
