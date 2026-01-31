@@ -7,10 +7,12 @@ public class GunConfig : ScriptableObject
     public float AimToSpeed => _aimToSpeed;
     public int MaxAmmo => _maxAmmo;
     public float FireRate => _fireRate;
+    public float ReloadTime => _reloadTime;
 
     [SerializeField] private float _aimToSpeed;
     [SerializeField] private int _maxAmmo;
     [SerializeField] private LayerMask _playerLayer;
     [SerializeField] private float _maxDistance;
     [SerializeField] private float _fireRate = 10f; // Default to 10 shots per second
+    [SerializeField] private float _reloadTime = 1.5f; // Default reload time
 }
