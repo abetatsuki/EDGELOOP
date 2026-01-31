@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: GunConfig
   m_EditorClassIdentifier: Assembly-CSharp::GunConfig
   _aimToSpeed: 10
-  _ammo: 100
+  _ammo: 11111
   _playerLayer:
     serializedVersion: 2
     m_Bits: 1
   _maxDistance: 100
+  _fireRate: 10

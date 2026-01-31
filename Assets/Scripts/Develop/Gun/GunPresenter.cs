@@ -17,6 +17,12 @@ namespace Develop.Gun
         {
             _isAiming = isAim;
         }
+        
+        public void OnReloadRequest()
+        {
+            _useCase.TryReload();
+        }
+        
         public void Update()
         {
             if (_isFiring)
@@ -24,6 +30,7 @@ namespace Develop.Gun
                 _useCase.TryFire();
             }
             _useCase.TryAim(_isAiming);
+            _useCase.Update();
         }
 
         private bool _isFiring;

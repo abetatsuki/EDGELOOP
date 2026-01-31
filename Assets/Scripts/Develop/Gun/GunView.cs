@@ -28,9 +28,13 @@ namespace Develop.Gun
             get => _tryTf.localRotation;
             set => _tryTf.localRotation = value;
         }
-        public ParticleSystem ParticleSystem
+        public ParticleSystem MuzzleFlash
         {
-            get => _particleSystem;
+            get => _muzuleFlash;
+        }
+        public GameObject BulletHolePrefab
+        {
+            get => _bulletHolePrefab;
         }
         public Vector3 AimPosition
         {
@@ -49,15 +53,17 @@ namespace Develop.Gun
         private GunPresenter _presenter;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
-        private ParticleSystem _particleSystem => particleSystem ??= GetComponentInChildren<ParticleSystem>();
-        private ParticleSystem particleSystem;
+        [SerializeField]
+        private ParticleSystem _muzuleFlash;
+        [SerializeField]
+        private GameObject _bulletHolePrefab;
 
         private void OnDrawGizmos()
         {
 
-            if (Physics.Raycast(_firePosition.position, transform.forward, out RaycastHit hit))
+            if (Physics.Raycast(FirePosition, Forward, out RaycastHit hit))
             {
-                Gizmos.DrawLine(_firePosition.position, hit.point);
+                Gizmos.DrawLine(FirePosition, hit.point);
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
         }
