@@ -1,19 +1,45 @@
 using Develop.Gun.Interface;
 using UnityEngine;
+
 namespace Develop.Gun
 {
     public class GunEffect
     {
-        public GunEffect(IGunView view )
+        public GunEffect(IGunView view)
         {
-            _particleSystem = view.ParticleSystem;
+            _muzzleFlash = view.MuzzleFlash;
+            _bulletHolePrefab = view.BulletHolePrefab;
         }
 
-        public void FireEffect(Vector3 input)
+        /// <summary>
+        /// Plays muzzle flash effect.
+        /// </summary>
+        public void FireEffect()
         {
-            _particleSystem.Play();
+            _muzzleFlash.Play();
         }
-        private ParticleSystem _particleSystem;
+
+        /// <summary>
+        /// Spawns bullet hole effect at hit position and sticks it to the target.
+        /// </summary>
+        public void HitEffect(Transform hitTransform, Vector3 hitPoint, Vector3 hitNormal)
+        {
+            Vector3 position = hitPoint + hitNormal * 0.01f;
+
+            // Rotate quad so it faces away from the surface
+            Quaternion rotation = Quaternion.LookRotation(-hitNormal);
+
+            GameObject bulletHole = Object.Instantiate(
+                _bulletHolePrefab,
+                position,
+                rotation,
+                hitTransform);
+
+            // Optional: auto-destroy after time
+            Object.Destroy(bulletHole, 3f);
+        }
+
+        private readonly ParticleSystem _muzzleFlash;
+        private readonly GameObject _bulletHolePrefab;
     }
 }
-

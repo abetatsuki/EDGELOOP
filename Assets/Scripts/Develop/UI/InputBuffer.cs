@@ -42,6 +42,7 @@ namespace Develop.UI
         private const string LOOK = "Look";
         private const string ATTACK = "Attack";
         private const string AIM = "Aim";
+        private const string RELOAD = "Reload";
 
         private bool _isMoveActive;
         private InputAction _moveAction;
@@ -50,6 +51,7 @@ namespace Develop.UI
         private InputAction _lookAction;
         private InputAction _attackAction;
         private InputAction _aimAction;
+        private InputAction _reloadAction;
 
 
         private void CreateMoveEvent()
@@ -60,6 +62,7 @@ namespace Develop.UI
             _lookAction = _playerInput.actions[LOOK];
             _attackAction = _playerInput.actions[ATTACK];
             _aimAction = _playerInput.actions[AIM];
+            _reloadAction = _playerInput.actions[RELOAD];
 
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
@@ -79,6 +82,7 @@ namespace Develop.UI
             _aimAction.performed += OnAim;
             _aimAction.canceled += OnAim;
 
+            _reloadAction.performed += OnReload;
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -133,6 +137,11 @@ namespace Develop.UI
             {
                 _gunRequest.OnFireRequest(false);
             }
+        }
+        public void OnReload(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            _gunRequest.OnReloadRequest();
         }
         public void OnAim(InputAction.CallbackContext context)
         {

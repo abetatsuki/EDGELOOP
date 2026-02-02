@@ -31,7 +31,8 @@ namespace Develop.DI
             var gunFire = new GunFire();
             var gunEffect = new GunEffect(gunView);
             var gunAim = new GunAim(gunView,gunConfig.AimToSpeed);
-            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim);
+            var gunAnim = new GunAnimController(gunView.GunAnimator);
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim);
             gun.Init();
             GunPresenter = new GunPresenter(gun);
 
