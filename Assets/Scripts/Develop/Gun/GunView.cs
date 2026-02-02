@@ -46,10 +46,16 @@ namespace Develop.Gun
             get => _defaultPosition.localPosition;
             set => _defaultPosition.localPosition = value;
         }
+        public Animator GunAnimator
+        {
+            get => _anim;
+        }
         [SerializeField] private Transform _aimPosition;
         [SerializeField] private Transform _defaultPosition;
         [SerializeField] private Transform _firePosition;
 
+        private Animator _animator;
+        private Animator _anim => _animator ??= GetComponent<Animator>();
         private GunPresenter _presenter;
         private Transform _tryTf => _tf ??= GetComponent<Transform>();
         private Transform _tf;
