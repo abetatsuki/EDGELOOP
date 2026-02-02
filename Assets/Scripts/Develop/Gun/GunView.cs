@@ -8,6 +8,8 @@ namespace Develop.Gun
         {
             _presenter = presenter;
         }
+        public Vector2 LookInput { get; set; }
+        public Quaternion TargetSwayRotation { get; set; }
         public Vector3 Position
         {
             get => _tryTf.localPosition;
@@ -64,6 +66,11 @@ namespace Develop.Gun
         [SerializeField]
         private GameObject _bulletHolePrefab;
 
+        private void Awake()
+        {
+            TargetSwayRotation = transform.localRotation;
+        }
+
         private void OnDrawGizmos()
         {
 
@@ -76,6 +83,11 @@ namespace Develop.Gun
         private void Update()
         {
             _presenter.Update();
+        }
+
+        private void LateUpdate()
+        {
+            Rotation = TargetSwayRotation;
         }
     }
 

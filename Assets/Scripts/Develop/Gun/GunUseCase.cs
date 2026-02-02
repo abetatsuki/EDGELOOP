@@ -1,9 +1,22 @@
 ﻿using Develop.Gun.Interface;
+using Develop.Interface; // Added for ILookInputSource
 using UnityEngine;
 namespace Develop.Gun
 {
     public class GunUseCase : IWeapon
     {
+        private readonly GunEntity _entity;
+        private readonly GunFire _fire;
+        private readonly GunConfig _config;
+        private readonly IGunView _view;
+        private readonly GunEffect _effect;
+        private readonly GunAim _aim;
+        private readonly GunAnimController _animController;
+        private readonly ReloadUseCase _reloadUseCase;
+        private readonly GunSwayHandler _swayHandler;
+        private readonly ILookInputSource _lookInputSource; // New field
+        
+        private readonly Quaternion _initialRotation;
 
         public GunUseCase(GunEntity entity,
             GunFire fire,
@@ -11,7 +24,8 @@ namespace Develop.Gun
             IGunView view,
             GunEffect effect,
             GunAim aim,
-            GunAnimController anim)
+            GunAnimController anim,
+            ILookInputSource lookInputSource) // Modified constructor
         {
             _entity = entity;
             _fire = fire;
@@ -21,8 +35,16 @@ namespace Develop.Gun
             _aim = aim;
             _animController = anim;
             _reloadUseCase = new ReloadUseCase(_entity, _config.ReloadTime, anim);
+            _swayHandler = new GunSwayHandler(_config);
+            _lookInputSource = lookInputSource; // Store the input source
+            
+            _initialRotation = _view.Rotation;
+            
             Init();
         }
+        
+        // Removed SetPresenter method
+        
         public void Init()
         {
             //ここでイベント登録などを行う。
@@ -57,17 +79,11 @@ namespace Develop.Gun
 
         public void Update()
         {
-               
+            // Removed null check for _presenter as it's no longer directly referenced
+            var newRotation = _swayHandler.CalculateSway(_lookInputSource.LookInput, _initialRotation, _view.Rotation, Time.deltaTime);
+            _view.TargetSwayRotation = newRotation;
+            
             _reloadUseCase.Update();
         }
-
-        private GunAnimController _animController;
-        private GunAim _aim;
-        private GunEntity _entity;
-        private GunFire _fire;
-        private GunConfig _config;
-        private IGunView _view;
-        private GunEffect _effect;
-        private ReloadUseCase _reloadUseCase;
     }
 }

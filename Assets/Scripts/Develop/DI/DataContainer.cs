@@ -32,9 +32,13 @@ namespace Develop.DI
             var gunEffect = new GunEffect(gunView);
             var gunAim = new GunAim(gunView,gunConfig.AimToSpeed);
             var gunAnim = new GunAnimController(gunView.GunAnimator);
-            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim);
+            
+            var gunLookInputSource = new GunLookInputSource(); // Instantiate the new input source
+
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim, gunLookInputSource); // Pass to GunUseCase
             gun.Init();
-            GunPresenter = new GunPresenter(gun);
+            GunPresenter = new GunPresenter(gun, gunLookInputSource); // Pass to GunPresenter
+            // Removed gun.SetPresenter(GunPresenter);
 
             InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
         }
