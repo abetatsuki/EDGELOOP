@@ -1,5 +1,4 @@
 ﻿using Develop.Gun.Interface;
-using Develop.Interface;
 using UnityEngine;
 namespace Develop.Gun
 {
@@ -11,7 +10,8 @@ namespace Develop.Gun
             GunConfig config,
             IGunView view,
             GunEffect effect,
-            GunAim aim)
+            GunAim aim,
+            GunAnimController anim)
         {
             _entity = entity;
             _fire = fire;
@@ -19,7 +19,8 @@ namespace Develop.Gun
             _view = view;
             _effect = effect;
             _aim = aim;
-            _reloadUseCase = new ReloadUseCase(_entity, _config.ReloadTime);
+            _animController = anim;
+            _reloadUseCase = new ReloadUseCase(_entity, _config.ReloadTime, anim);
             Init();
         }
         public void Init()
@@ -45,19 +46,22 @@ namespace Develop.Gun
         public void TryAim(bool isAim)
         {
             _entity.SetAiming(isAim);
-            _aim.Aim(_entity.IsAiming());
+            _animController.SetAimBool(_entity.IsAiming());
         }
+       
 
         public void TryReload()
         {
             _reloadUseCase.StartReload();
         }
-        
+
         public void Update()
         {
+               
             _reloadUseCase.Update();
         }
-        
+
+        private GunAnimController _animController;
         private GunAim _aim;
         private GunEntity _entity;
         private GunFire _fire;
