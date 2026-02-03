@@ -55,7 +55,7 @@ namespace Develop.Gun
         [SerializeField] private Transform _aimPosition;
         [SerializeField] private Transform _defaultPosition;
         [SerializeField] private Transform _firePosition;
-
+        [SerializeField] private Transform _swayTf;
         private Animator _animator;
         private Animator _anim => _animator ??= GetComponent<Animator>();
         private GunPresenter _presenter;
@@ -87,7 +87,7 @@ namespace Develop.Gun
 
         private void LateUpdate()
         {
-            Rotation = TargetSwayRotation;
+          _swayTf.localRotation = TargetSwayRotation;
         }
     }
 
