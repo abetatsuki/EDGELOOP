@@ -1,3 +1,4 @@
+using System;
 using Develop.Gun.Interface;
 using UnityEngine;
 namespace Develop.Player.Entity
@@ -9,6 +10,9 @@ namespace Develop.Player.Entity
             MaxHealth = maxHealth;
             CurrentHealth = maxHealth;
         }
+        
+        public event Action<int> OnHealthChanged;
+        
         public int MaxHealth { get; }
         public int CurrentHealth { get; private set; }
         public void TakeDamage(int damage)
@@ -18,6 +22,7 @@ namespace Develop.Player.Entity
             {
                 CurrentHealth = 0;
             }
+            OnHealthChanged?.Invoke(CurrentHealth);
             Debug.Log($"Took {damage} damage, current health: {CurrentHealth}/{MaxHealth}");
         }
         public void Heal(int amount)
@@ -27,6 +32,7 @@ namespace Develop.Player.Entity
             {
                 CurrentHealth = MaxHealth;
             }
+            OnHealthChanged?.Invoke(CurrentHealth);
             Debug.Log($"Healed {amount}, current health: {CurrentHealth}/{MaxHealth}");
         }
     }

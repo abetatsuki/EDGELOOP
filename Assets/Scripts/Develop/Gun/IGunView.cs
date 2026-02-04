@@ -9,7 +9,7 @@ namespace Develop.Gun.Interface
 
         Vector3 Forward { get; }
         Quaternion Rotation { get; set; }
-        Quaternion TargetSwayRotation { get; set; }
+        Quaternion SwayRotation { get; set; }
         ParticleSystem MuzzleFlash { get; }
         GameObject BulletHolePrefab { get; }
 

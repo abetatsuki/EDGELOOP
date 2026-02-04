@@ -10,12 +10,30 @@ namespace Develop.Player.View
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerView : MonoBehaviour, IMovableBody,IPlayer,IDamageable
     {
-        public void Init(PlayerPresenter presetner , InputBuffer buffer,HealthEntity health)
+        public void Init(PlayerPresenter presenter , InputBuffer buffer)
         {
-            _playerUpdate = presetner;
+            _playerUpdate = presenter;
             _inputBuffer = buffer;
-            _healthEntity = health;
+
+            _inputBuffer.Awake();
+            
+            _playerUpdate.OnHealthChanged += UpdateHealthUI;
+            UpdateHealthUI(_playerUpdate.CurrentHealth);
         }
+        
+        private void OnDestroy()
+        {
+            if (_playerUpdate != null)
+            {
+                _playerUpdate.OnHealthChanged -= UpdateHealthUI;
+            }
+        }
+        
+        private void UpdateHealthUI(int newHealth)
+        {
+            Debug.Log($"PlayerView: Health updated to {newHealth}");
+        }
+
         public Vector3 Position
         {
             get => Rb.position;
@@ -50,10 +68,9 @@ namespace Develop.Player.View
 
         public void TakeDamage(int damage)
         {
-          _healthEntity.TakeDamage(damage);
+          _playerUpdate.TakeDamage(damage);
         }
-
-
+        
         [SerializeField]
         private Transform _camera;
         public PlayerInput PlayerInput => _playerInput;
@@ -61,16 +78,11 @@ namespace Develop.Player.View
         private InputBuffer _inputBuffer;
         private PlayerInput _playerInput => _pi??=GetComponent<PlayerInput>();
         private PlayerInput _pi;
-        private HealthEntity _healthEntity;
         private Transform Tf => _tf??= GetComponent<Transform>();
         private Transform _tf;
         private Rigidbody Rb => _rb ??= GetComponent<Rigidbody>();
         private Rigidbody _rb;
-
-        private void Awake()
-        {
-            _inputBuffer.Awake();
-        }
+        
         private void Update()
         {
             _inputBuffer.Update();

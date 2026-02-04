@@ -15,7 +15,7 @@ namespace Develop.Gun
             _maxSway = gunConfig.MaxSway;
         }
 
-        public Quaternion CalculateSway(Vector2 lookInput, Quaternion initialRotation, Quaternion currentRotation, float deltaTime)
+        public Quaternion CalculateSway(Vector2 lookInput, Quaternion currentSway, float deltaTime)
         {
             float swayX = Mathf.Clamp(
                 -lookInput.y * _swayAmount,
@@ -29,15 +29,19 @@ namespace Develop.Gun
                 _maxSway
             );
 
-            var targetRotation = Quaternion.Euler(swayX, swayY, 0f);
+            // The target sway rotation based on input
+            var targetSway = Quaternion.Euler(swayX, swayY, 0f);
 
-            var newRotation = Quaternion.Slerp(
-                currentRotation,
-                initialRotation * targetRotation,
+            // Smoothly interpolate from the current sway to the target sway.
+            // When there is no input, targetSway will be Quaternion.identity,
+            // so the gun will smoothly return to the center.
+            var newSway = Quaternion.Slerp(
+                currentSway,
+                targetSway,
                 deltaTime * _swaySmooth
             );
-            Debug.Log(newRotation);
-            return newRotation;
+            
+            return newSway;
         }
     }
 }

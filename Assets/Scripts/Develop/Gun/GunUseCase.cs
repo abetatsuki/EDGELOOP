@@ -16,8 +16,6 @@ namespace Develop.Gun
         private readonly GunSwayHandler _swayHandler;
         private readonly ILookInputSource _lookInputSource; // New field
         
-        private readonly Quaternion _initialRotation;
-
         public GunUseCase(GunEntity entity,
             GunFire fire,
             GunConfig config,
@@ -37,8 +35,6 @@ namespace Develop.Gun
             _reloadUseCase = new ReloadUseCase(_entity, _config.ReloadTime, anim);
             _swayHandler = new GunSwayHandler(_config);
             _lookInputSource = lookInputSource; // Store the input source
-            
-            _initialRotation = _view.Rotation;
             
             Init();
         }
@@ -79,9 +75,10 @@ namespace Develop.Gun
 
         public void Update()
         {
-            // Removed null check for _presenter as it's no longer directly referenced
-            var newRotation = _swayHandler.CalculateSway(_lookInputSource.LookInput, _initialRotation, _view.Rotation, Time.deltaTime);
-            _view.TargetSwayRotation = newRotation;
+            // Use the new SwayRotation property to read the current state 
+            // from the sway layer and write the new calculated state back to it.
+            var newSway = _swayHandler.CalculateSway(_lookInputSource.LookInput, _view.SwayRotation, Time.deltaTime);
+            _view.SwayRotation = newSway;
             
             _reloadUseCase.Update();
         }

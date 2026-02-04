@@ -9,7 +9,11 @@ namespace Develop.Gun
             _presenter = presenter;
         }
         public Vector2 LookInput { get; set; }
-        public Quaternion TargetSwayRotation { get; set; }
+        public Quaternion SwayRotation
+        {
+            get => _swayTf.localRotation;
+            set => _swayTf.localRotation = value;
+        }
         public Vector3 Position
         {
             get => _tryTf.localPosition;
@@ -65,12 +69,7 @@ namespace Develop.Gun
         private ParticleSystem _muzuleFlash;
         [SerializeField]
         private GameObject _bulletHolePrefab;
-
-        private void Awake()
-        {
-            TargetSwayRotation = transform.localRotation;
-        }
-
+        
         private void OnDrawGizmos()
         {
 
@@ -83,11 +82,6 @@ namespace Develop.Gun
         private void Update()
         {
             _presenter.Update();
-        }
-
-        private void LateUpdate()
-        {
-          _swayTf.localRotation = TargetSwayRotation;
         }
     }
 
