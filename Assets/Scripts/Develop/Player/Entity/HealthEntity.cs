@@ -1,7 +1,8 @@
+using Develop.Gun.Interface;
 using UnityEngine;
 namespace Develop.Player.Entity
 {
-    public class HealthEntity
+    public class HealthEntity 
     {
         public HealthEntity(int maxHealth)
         {
