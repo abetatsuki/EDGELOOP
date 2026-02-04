@@ -1,4 +1,6 @@
-﻿using Develop.Interface;
+﻿using Develop.Gun.Interface;
+using Develop.Interface;
+using Develop.Player.Entity;
 using Develop.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,12 +8,13 @@ using UnityEngine.InputSystem;
 namespace Develop.Player.View
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerView : MonoBehaviour, IMovableBody,IPlayer
+    public class PlayerView : MonoBehaviour, IMovableBody,IPlayer,IDamageable
     {
-        public void Init(PlayerPresenter presetner , InputBuffer buffer)
+        public void Init(PlayerPresenter presetner , InputBuffer buffer,HealthEntity health)
         {
             _playerUpdate = presetner;
             _inputBuffer = buffer;
+            _healthEntity = health;
         }
         public Vector3 Position
         {
@@ -45,7 +48,10 @@ namespace Develop.Player.View
             set => Rb.linearDamping = value;
         }
 
-        
+        public void TakeDamage(int damage)
+        {
+          _healthEntity.TakeDamage(damage);
+        }
 
 
         [SerializeField]
@@ -55,7 +61,7 @@ namespace Develop.Player.View
         private InputBuffer _inputBuffer;
         private PlayerInput _playerInput => _pi??=GetComponent<PlayerInput>();
         private PlayerInput _pi;
-
+        private HealthEntity _healthEntity;
         private Transform Tf => _tf??= GetComponent<Transform>();
         private Transform _tf;
         private Rigidbody Rb => _rb ??= GetComponent<Rigidbody>();
