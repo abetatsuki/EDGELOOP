@@ -21,7 +21,7 @@ namespace Develop.GameManager
         {
             _dataContainer = new DataContainer();
             _dataContainer?.Init(_playerView, _playerConfig,_playerView,_gunConfig,_gunView);
-            _playerView.Init(_dataContainer.PlayerPresenter,_dataContainer.InputBuffer);
+            _playerView.Init(_dataContainer.PlayerPresenter,_dataContainer.InputBuffer,_dataContainer.HealthEntity);
             _gunView.Init(_dataContainer.GunPresenter);
         }
     }
