@@ -1,4 +1,4 @@
-using Develop.Gun.Interface;
+using Develop.Interface;
 using UnityEngine;
 namespace Develop
 {
@@ -6,7 +6,7 @@ namespace Develop
     {
         public static void ApplyDamage(IDamageable damageable, int damage)
         {
-            damageable?.TakeDamage(damage);
+            damageable?.TakeDamage(damage, Vector3.zero);
         }
 
     }
