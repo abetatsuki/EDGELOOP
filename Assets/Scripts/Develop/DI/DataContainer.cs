@@ -13,12 +13,13 @@ namespace Develop.DI
     public class DataContainer
     {
         public PlayerPresenter PlayerPresenter { get; private set; }
-
+        public HealthEntity HealthEntity { get; private set; }
         public GunPresenter GunPresenter { get; private set; }
         public InputBuffer InputBuffer { get; private set; }
 
         public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
         {
+            var healthEntity = new HealthEntity(100);
             var playerEntity = new PlayerEntity();
             var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngle);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
@@ -32,9 +33,13 @@ namespace Develop.DI
             var gunEffect = new GunEffect(gunView);
             var gunAim = new GunAim(gunView,gunConfig.AimToSpeed);
             var gunAnim = new GunAnimController(gunView.GunAnimator);
-            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim);
+            
+            var gunLookInputSource = new GunLookInputSource(); // Instantiate the new input source
+
+            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim, gunLookInputSource); // Pass to GunUseCase
             gun.Init();
-            GunPresenter = new GunPresenter(gun);
+            GunPresenter = new GunPresenter(gun, gunLookInputSource); // Pass to GunPresenter
+            // Removed gun.SetPresenter(GunPresenter);
 
             InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
         }

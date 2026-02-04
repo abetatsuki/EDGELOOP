@@ -1,3 +1,4 @@
+using Develop.Gun.Interface;
 using System;
 using UnityEngine;
 namespace Develop.Gun
@@ -15,6 +16,10 @@ namespace Develop.Gun
                 Debug.Log($"Hit: {hit.collider.name} at {hit.point}");
                 // TODO: 敵にダメージを与える処理や、着弾エフェクトの生成
                 OnHit?.Invoke(hit.transform,hit.point,hit.normal);
+                if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
+                {
+                    DamageUtility.ApplyDamage(damageable, 10); 
+                }
             }
             else
             {

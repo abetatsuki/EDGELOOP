@@ -125,6 +125,7 @@ namespace Develop.UI
         {
             Vector2 input = context.ReadValue<Vector2>();
              _playerInputPort.OnLookInput(input);
+            _gunRequest.OnLookInput(input);
         }
 
         private void OnAttack(InputAction.CallbackContext context)

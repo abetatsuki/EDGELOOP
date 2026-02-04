@@ -20,3 +20,6 @@ MonoBehaviour:
   _maxDistance: 100
   _fireRate: 10
   _reloadTime: 1.5
+  _swayAmount: 2
+  _swaySmooth: 5
+  _maxSway: 3
