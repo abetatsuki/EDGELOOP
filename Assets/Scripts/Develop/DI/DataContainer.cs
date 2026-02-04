@@ -13,12 +13,13 @@ namespace Develop.DI
     public class DataContainer
     {
         public PlayerPresenter PlayerPresenter { get; private set; }
-
+        public HealthEntity HealthEntity { get; private set; }
         public GunPresenter GunPresenter { get; private set; }
         public InputBuffer InputBuffer { get; private set; }
 
         public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
         {
+            var healthEntity = new HealthEntity(100);
             var playerEntity = new PlayerEntity();
             var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngle);
             var walkStrategy = new WalkStrategy(config.WalkSpeed);
