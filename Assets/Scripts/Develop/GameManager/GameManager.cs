@@ -22,7 +22,7 @@ namespace Develop.GameManager
         private void Awake()
         {
             _playerDataContainer = new PlayerDataContainer();
-            _playerDataContainer.Init(_playerView, _playerConfig);
+            _playerDataContainer.Init(_playerView, _playerConfig, _playerView.ImpulseSource, _playerView.transform);
 
             _gunDataContainer = new GunDataContainer();
             _gunDataContainer.Init(_gunConfig, _gunView);
