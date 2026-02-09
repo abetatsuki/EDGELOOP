@@ -1,16 +1,16 @@
 {
-  "name": "Runtime.Usecase",
-  "rootNamespace": "Runtime",
-  "references": [
-    "Runtime.Interfaces"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Runtime.Usecase",
+    "rootNamespace": "Runtime",
+    "references": [
+        "Runtime.Interfaces"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
