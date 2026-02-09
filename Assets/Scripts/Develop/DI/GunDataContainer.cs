@@ -1,6 +1,5 @@
 using Develop.Gun;
-using Develop.Gun.Interface;
-using Develop.Interface;
+using Develop.Gun.Interface; // Ensure this is available
 
 namespace Develop.DI
 {
@@ -17,8 +16,9 @@ namespace Develop.DI
             var gunAnim = new GunAnimController(gunView.GunAnimator);
 
             var gunLookInputSource = new GunLookInputSource(); 
+            var gunRecoilHandler = new GunRecoilHandler(gunConfig); // Instantiate GunRecoilHandler
 
-            var gun = new GunUseCase(gunEntity, gunFire, gunConfig, gunView, gunEffect, gunAim, gunAnim, gunLookInputSource);
+            var gun = new GunUseCase(gunEntity, gunFire, gunConfig, gunView, gunEffect, gunAim, gunAnim, gunLookInputSource, gunRecoilHandler); // Pass GunRecoilHandler
             gun.Init();
             GunPresenter = new GunPresenter(gun, gunLookInputSource);
         }
