@@ -1,14 +1,11 @@
 using Runtime;
 using UnityEngine;
+using VContainer;
 
 public class EnviromentAdaptor : MonoBehaviour
 {
-    public void SetApplyEnvironmentState(IApplyEnvironmentState applyEnvironmentState)
-    {
-        _applyEnvironmentState = applyEnvironmentState;
-    }
     [SerializeField] GroundDetector _groundDetector;
-    private IApplyEnvironmentState _applyEnvironmentState;
+    [Inject] private IApplyEnvironmentState _applyEnvironmentState;
 
     private void Update()
     {
