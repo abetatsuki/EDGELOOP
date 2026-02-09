@@ -11,7 +11,6 @@ public class WeaponReloadVisual : MonoBehaviour
 
     public void OnMagOut()
     {
-        animator.speed = 0.5f;
         magazinMesh.SetActive(false);
         currentDummy.SetActive(true);
     }
