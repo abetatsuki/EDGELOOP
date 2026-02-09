@@ -1,11 +1,19 @@
 using Runtime;
-using UnityEngine;
 
-public class Enviroment : IApplyEnvironmentState
+namespace Runtime
 {
-    public void ApplyEnvironment(Environment environment)
+    public class Enviroment : IApplyEnvironmentState
     {
-        _characterEntity.SetIsGround(environment.IsGround);
+        private readonly CharacterEntity _characterEntity;
+
+        public Enviroment(CharacterEntity characterEntity)
+        {
+            _characterEntity = characterEntity;
+        }
+
+        public void ApplyEnvironment(Environment environment)
+        {
+            _characterEntity.SetIsGround(environment.IsGround);
+        }
     }
-    private CharacterEntity _characterEntity;
 }
