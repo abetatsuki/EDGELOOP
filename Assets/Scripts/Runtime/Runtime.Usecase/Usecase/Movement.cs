@@ -15,7 +15,11 @@ namespace Runtime
 
         public void Handle(JumpInputData data)
         {
-            float power = _characterEntity.ConsueJumpPower();
+            float power = 10f; // Example fixed jump power
+            if (!_characterEntity.CanJump())
+            {
+                return;
+            }
             if (data.IsPressed)
             {
                 _jumpPhysicsOutput.ApplyJump(new JumpCommand(power));
