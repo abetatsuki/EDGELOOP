@@ -7,7 +7,7 @@ namespace Runtime
         public void ApplyJump(JumpCommand command)
         {
             _rigidbody.AddForce(Vector3.up * command.Power, ForceMode.Impulse);
-        }
+         }
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
