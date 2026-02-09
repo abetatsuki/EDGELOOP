@@ -7,71 +7,112 @@ namespace Develop.Player.Usecase
 {
     public class MovePlayerUseCase
     {
+        private readonly PlayerEntity _playerEntity;
+        private readonly IMovableBody _body;
+        private readonly WalkStrategy _walkStrategy;
+        private readonly RunStrategy _runStrategy;
+        private readonly SlideStrategy _slideStrategy;
+        private readonly ILook _look;
+
+        private IMovementStrategy _currentStrategy;
+        private IMovementStrategy _previousStrategy; // 追加
 
         public MovePlayerUseCase(
-            PlayerEntity player,
+            PlayerEntity playerEntity,
             IMovableBody body,
-            IMovementStrategy walk,
-            IMovementStrategy run,
-            IMovementStrategy slide,
+            WalkStrategy walkStrategy, // 具体的な型にする
+            RunStrategy runStrategy,   // 具体的な型にする
+            SlideStrategy slideStrategy, // 具体的な型にする
             ILook look)
         {
-            _playerEntity = player;
+            _playerEntity = playerEntity;
             _body = body;
-            _walk = walk;
-            _run = run;
-            _slide = slide;
+            _walkStrategy = walkStrategy;
+            _runStrategy = runStrategy;
+            _slideStrategy = slideStrategy;
             _look = look;
-            _current = _walk;
+            _currentStrategy = _walkStrategy; // 初期状態
+            _previousStrategy = _walkStrategy; // 初期状態
+            _currentStrategy.Enter(_body, _playerEntity); // 初期戦略のEnterを呼ぶ
         }
 
         public void Move(Vector2 input, float deltaTime)
         {
-            if (input == Vector2.zero)
-            {
-                //ここにIdle処理を描く。
-            }
-            else if (_playerEntity.CanSliding())
-            {
-                _current.Move(_body, Vector2.zero, deltaTime);
-            }
-            else if (_playerEntity.CanMove())
-            {
-                _current.Move(_body, input, deltaTime);
-            }
+            _currentStrategy.Execute(_body, input, deltaTime);
         }
 
         public void Look(Vector2 input)
         {
             _look.Look(input);
         }
+
         public void Slide(bool isSliding)
         {
             if (isSliding)
             {
-                _playerEntity.StartSliding();
-                _current = _slide;
+                if (!_playerEntity.IsSliding && _playerEntity.CanSliding()) // 現在スライディング中でなく、スライディング可能なら
+                {
+                    _previousStrategy = _currentStrategy; // 現在の戦略を保存
+                    _currentStrategy.Exit(_body, _playerEntity);
+                    _currentStrategy = _slideStrategy;
+                    _currentStrategy.Enter(_body, _playerEntity);
+                }
             }
-            else if (!isSliding)
+            else // !isSliding
             {
-                _playerEntity.StopSliding();
-                _current = _walk;
+                if (_playerEntity.IsSliding) // スライディング中であれば終了
+                {
+                    _currentStrategy.Exit(_body, _playerEntity);
+                    _currentStrategy = _previousStrategy; // 前の戦略に戻す
+                    _currentStrategy.Enter(_body, _playerEntity);
+                }
             }
         }
+
         public void SetRunning(bool isRunning)
         {
-            if (_current == _slide) return;
-            _current = isRunning ? _run : _walk;
+            if (_playerEntity.IsSliding) return; // スライディング中は実行しない
+
+            IMovementStrategy newStrategy = isRunning ? _runStrategy : _walkStrategy;
+
+            if (_currentStrategy != newStrategy)
+            {
+                _previousStrategy = _currentStrategy; // 現在の戦略を保存
+                _currentStrategy.Exit(_body, _playerEntity);
+                _currentStrategy = newStrategy;
+                _currentStrategy.Enter(_body, _playerEntity);
+            }
         }
-
-
-        private readonly IMovableBody _body;
-        private readonly IMovementStrategy _walk;
-        private readonly IMovementStrategy _run;
-        private readonly IMovementStrategy _slide;
-        private readonly PlayerEntity _playerEntity;
-        private IMovementStrategy _current;
-        private ILook _look;
+        
+        // 古いMovePlayerUseCaseのコードは削除
+        // public void Move(Vector2 input, float deltaTime)
+        // {
+        //     if (input == Vector2.zero)
+        //     {
+        //         //ここにIdle処理を描く。
+        //     }
+        //     else if (_playerEntity.CanSliding())
+        //     {
+        //         _current.Move(_body, Vector2.zero, deltaTime);
+        //     }
+        //     else if (_playerEntity.CanMove())
+        //     {
+        //         _current.Move(_body, input, deltaTime);
+        //     }
+        // }
+        // public void Slide(bool isSliding)
+        // {
+        //     if (isSliding)
+        //     {
+        //         _playerEntity.StartSliding();
+        //         _current = _slide;
+        //     }
+        //     else if (!isSliding)
+        //     {
+        //         _playerEntity.StopSliding();
+        //         _current = _walk;
+        //     }
+        // }
     }
 }
 
