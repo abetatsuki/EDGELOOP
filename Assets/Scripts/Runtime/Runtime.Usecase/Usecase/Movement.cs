@@ -1,9 +1,16 @@
-
-using UnityEngine;
 namespace Runtime
 {
     public class Movement : IJumpInputPort
     {
+        private readonly CharacterEntity _characterEntity;
+        private readonly IJumpPhysicsOutput _jumpPhysicsOutput;
+
+        public Movement(CharacterEntity characterEntity, IJumpPhysicsOutput jumpPhysicsOutput)
+        {
+            _characterEntity = characterEntity;
+            _jumpPhysicsOutput = jumpPhysicsOutput;
+        }
+
         public void Handle(JumpInputData data)
         {
             float power = _characterEntity.ConsueJumpPower();
@@ -13,12 +20,7 @@ namespace Runtime
             }
             else
             {
-                
             }
         }
-
-        private CharacterEntity _characterEntity;
-        private IJumpPhysicsOutput _jumpPhysicsOutput;
     }
-
 }
