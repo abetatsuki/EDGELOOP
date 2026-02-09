@@ -12,6 +12,14 @@ public class GunConfig : ScriptableObject
     public float SwayAmount => _swayAmount;
     public float SwaySmooth => _swaySmooth;
     public float MaxSway => _maxSway;
+    
+    public Vector3 RecoilRotationAmount => _recoilRotationAmount;
+    public Vector3 RecoilPositionAmount => _recoilPositionAmount;
+    public float RecoilSpeed => _recoilSpeed;
+    public float RecoilReturnSpeed => _recoilReturnSpeed;
+
+    public Vector3 MaxRecoilRotation => _maxRecoilRotation;
+    public Vector3 MaxRecoilPosition => _maxRecoilPosition;
 
     [SerializeField] private float _aimToSpeed;
     [SerializeField] private int _maxAmmo;
@@ -24,4 +32,14 @@ public class GunConfig : ScriptableObject
     [SerializeField] private float _swayAmount = 2f;
     [SerializeField] private float _swaySmooth = 8f;
     [SerializeField] private float _maxSway = 5f;
+    
+    [Header("Recoil Settings")]
+    [SerializeField] private Vector3 _recoilRotationAmount = new Vector3(2f, 0.5f, 0f);
+    [SerializeField] private Vector3 _recoilPositionAmount = new Vector3(0f, 0f, -0.1f);
+    [SerializeField] private float _recoilSpeed = 10f;
+    [SerializeField] private float _recoilReturnSpeed = 5f;
+
+    [Header("Recoil Limits")]
+    [SerializeField] private Vector3 _maxRecoilRotation = new Vector3(20f, 10f, 0f);
+    [SerializeField] private Vector3 _maxRecoilPosition = new Vector3(0f, 0f, -0.5f);
 }
