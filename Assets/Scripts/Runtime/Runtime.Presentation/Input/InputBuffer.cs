@@ -25,6 +25,21 @@ namespace Runtime
 
         private const string JUMP_ACTION = "Jump";
         private InputAction _jumpAction;
+
+        private void OnEnable()
+        {
+            PlayerInputSetUp();
+        }
+
+        private void OnDisable()
+        {
+            if (_jumpAction != null)
+            {
+                _jumpAction.performed -= OnJump;
+                _jumpAction.canceled -= OnJump;
+            }
+        }
+
         private void PlayerInputSetUp()
         {
             _playerInput = GetComponent<PlayerInput>();
