@@ -1,16 +1,13 @@
 using UnityEngine;
+using VContainer;
 namespace Runtime
 {
     public class CharacterEntity
     {
+
         public bool CanJump()
         {
             return _isGround;
-        }
-
-        public float ConsueJumpPower()
-        {
-            return 10f;
         }
 
         public void SetIsGround(bool isGround)
