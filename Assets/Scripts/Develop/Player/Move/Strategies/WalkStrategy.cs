@@ -1,4 +1,4 @@
-﻿using Develop.Interface;
+﻿using Develop.Interface; // Develop.Interfaceのために必要
 using Develop.Player.Entity;
 using UnityEngine;
 
@@ -12,7 +12,17 @@ namespace Develop.Player.Move.Strategies
             _speed = speed;
         }
 
-        public void Move(IMovableBody body, Vector2 input, float deltaTime)
+        public void Enter(IMovableBody body, PlayerEntity playerEntity)
+        {
+            // 何もしない
+        }
+
+        public void Exit(IMovableBody body, PlayerEntity playerEntity)
+        {
+            // 何もしない
+        }
+
+        public void Execute(IMovableBody body, Vector2 input, float deltaTime)
         {
             body.LinearDamping = 0f;
             Vector3 inputDirection = new Vector3(input.x, 0, input.y).normalized;

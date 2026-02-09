@@ -14,7 +14,7 @@ namespace Develop.Gun
 
         public bool CanFire()
         {
-            Debug.Log($"{_currentAmmo} + {Time.time >=_nextFireTime} +{ _isReloading}");
+          //  Debug.Log($"{_currentAmmo} + {Time.time >=_nextFireTime} +{ _isReloading}");
             return _currentAmmo > 0 && Time.time >= _nextFireTime && !_isReloading;
         }
         public bool CanReload()

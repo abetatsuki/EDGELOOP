@@ -43,6 +43,7 @@ namespace Develop.UI
         private const string ATTACK = "Attack";
         private const string AIM = "Aim";
         private const string RELOAD = "Reload";
+        private const string JUMP = "Jump"; // 追加
 
         private bool _isMoveActive;
         private InputAction _moveAction;
@@ -52,6 +53,7 @@ namespace Develop.UI
         private InputAction _attackAction;
         private InputAction _aimAction;
         private InputAction _reloadAction;
+        private InputAction _jumpAction; // 追加
 
 
         private void CreateMoveEvent()
@@ -63,6 +65,7 @@ namespace Develop.UI
             _attackAction = _playerInput.actions[ATTACK];
             _aimAction = _playerInput.actions[AIM];
             _reloadAction = _playerInput.actions[RELOAD];
+            _jumpAction = _playerInput.actions[JUMP]; // 追加
 
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
@@ -83,6 +86,8 @@ namespace Develop.UI
             _aimAction.canceled += OnAim;
 
             _reloadAction.performed += OnReload;
+
+            _jumpAction.performed += OnJump; // 追加
         }
 
         private void OnMove(InputAction.CallbackContext context)
@@ -111,6 +116,7 @@ namespace Develop.UI
 
         private void OnSlide(InputAction.CallbackContext context)
         {
+            Debug.Log($"Slide input: {context.action.name}, performed: {context.performed}, canceled: {context.canceled}"); // デバッグログ追加
             if (context.performed)
             {
                 _playerInputPort.OnSlideInput(true);
@@ -155,6 +161,15 @@ namespace Develop.UI
                 _gunRequest.OnAimRequest(false);
             }
         }
+
+        private void OnJump(InputAction.CallbackContext context) // 追加
+        {
+            if (context.performed)
+            {
+                _playerInputPort.OnJumpInput();
+            }
+        }
+
         private void OnDestroy()
         {
         }

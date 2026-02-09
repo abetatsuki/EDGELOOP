@@ -9,5 +9,6 @@ namespace Develop.Interface
         void OnSlideInput(bool isSliding);
 
         void OnLookInput(Vector2 input);
+        void OnJumpInput(); // 追加
     }
 }

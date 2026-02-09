@@ -1,65 +1,57 @@
 ﻿using Develop.Interface;
+using Develop.Player.Entity;
 using UnityEngine;
 
 namespace Develop.Player.Move.Strategies
 {
     public sealed class SlideStrategy : IMovementStrategy
     {
-        public SlideStrategy(
-            float decelerationRate,
-            float endSpeed,
-            LayerMask groundLayer,
-            float groundCheckDistance)
+        private readonly IMovableBody _movableBody;
+        private readonly PlayerEntity _playerEntity;
+        private readonly PlayerConfig _config;
+
+        private float _slideStartTime;
+
+        public SlideStrategy(IMovableBody movableBody, PlayerEntity playerEntity, PlayerConfig config)
         {
-            _decelerationRate = decelerationRate;
-            _endSpeed = endSpeed;
-            _groundLayer = groundLayer;
-            _groundCheckDistance = groundCheckDistance;
+            _movableBody = movableBody;
+            _playerEntity = playerEntity;
+            _config = config;
         }
 
-        /// <summary>
-        /// スライディング中の移動処理を行う
-        /// </summary>
-        public void Move(IMovableBody body, Vector2 input, float deltaTime)
+        public void Enter(IMovableBody body, PlayerEntity playerEntity)
         {
-            // 地面法線を取得する
-            Vector3 groundNormal = GetGroundNormal(body);
-
-            // 現在の速度方向を地面に投影し、スライド方向を補正する
-            Vector3 slideDirection = Vector3.ProjectOnPlane(body.Velocity, groundNormal).normalized;
-
-            // 指数減衰による速度低下を計算する
-            float speed = body.Velocity.magnitude;
-            speed *= Mathf.Exp(-_decelerationRate * deltaTime);
-
-            // Rigidbody にスライド速度を反映する
-            body.Velocity = slideDirection * speed;
+            _playerEntity.StartSliding();
+            body.ColliderHeight = _config.SlideColliderHeight;
+            body.ColliderCenterY = _config.SlideColliderCenterY;
+            _slideStartTime = Time.time;
+            Debug.Log("Sliding Started!");
         }
 
-        /// <summary>
-        /// Raycast を使用して地面の法線を取得する
-        /// </summary>
-        private Vector3 GetGroundNormal(IMovableBody body)
+        public void Execute(IMovableBody body, Vector2 input, float deltaTime)
         {
+            // スライディング中は常に速度を前方へ設定
+            body.Velocity = body.Forward * _config.SlideSpeed;
 
-            Ray ray = new Ray(body.Position, Vector3.down);
-
-            if (Physics.Raycast(
-                ray,
-                out RaycastHit hit,
-                _groundCheckDistance,
-                _groundLayer))
+            // 時間経過でスライディングを終了
+            if (Time.time - _slideStartTime >= _config.SlideDuration)
             {
-                return hit.normal;
+                _playerEntity.StopSliding();
             }
-
-            // 地面が取得できない場合は上向きを返す
-            return Vector3.up;
         }
 
-        private readonly float _decelerationRate;
-        private readonly float _endSpeed;
-        private readonly LayerMask _groundLayer;
-        private readonly float _groundCheckDistance;
+        public void Exit(IMovableBody body, PlayerEntity playerEntity)
+        {
+            _playerEntity.StopSliding(); // 念のため呼ぶ (入力解除時にも呼ばれるため重複する可能性あり)
+            body.ColliderHeight = body.DefaultColliderHeight;
+            body.ColliderCenterY = body.DefaultColliderCenterY;
+            Debug.Log("Sliding Ended!");
+        }
+
+        // 古いフィールドは削除
+        // private readonly float _decelerationRate;
+        // private readonly float _endSpeed;
+        // private readonly LayerMask _groundLayer;
+        // private readonly float _groundCheckDistance;
     }
 }

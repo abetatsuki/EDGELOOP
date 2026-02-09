@@ -22,4 +22,14 @@ MonoBehaviour:
   _groundCheckDistance: 0.3
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
+  _impactStrength: 0.03
+  _diagonalThreshold: 0.1
+  _gunImpactForce: 0.1
+  _gunImpactOffset: {x: 0, y: 0.05, z: -0.1}
+  _jumpForce: 5
+  _maxJumps: 1
+  _slideSpeed: 8
+  _slideDuration: 1.5
+  _slideColliderHeight: 1
+  _slideColliderCenterY: 0.5

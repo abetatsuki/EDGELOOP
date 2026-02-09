@@ -23,3 +23,9 @@ MonoBehaviour:
   _swayAmount: 2
   _swaySmooth: 5
   _maxSway: 3
+  _recoilRotationAmount: {x: 2, y: 0.5, z: 0}
+  _recoilPositionAmount: {x: 0, y: 0, z: -0.1}
+  _recoilSpeed: 10
+  _recoilReturnSpeed: 5
+  _maxRecoilRotation: {x: 20, y: 10, z: 0}
+  _maxRecoilPosition: {x: 0, y: 0, z: 0.1}

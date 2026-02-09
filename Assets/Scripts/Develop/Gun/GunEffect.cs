@@ -1,4 +1,5 @@
 using Develop.Gun.Interface;
+using Develop.Interface; // IDamageableのために追加
 using UnityEngine;
 
 namespace Develop.Gun
@@ -24,6 +25,13 @@ namespace Develop.Gun
         /// </summary>
         public void HitEffect(Transform hitTransform, Vector3 hitPoint, Vector3 hitNormal)
         {
+            // ヒットしたオブジェクトがIDamageableを実装していれば弾痕を生成しない
+            if (hitTransform.gameObject.TryGetComponent<IDamageable>(out _))
+            {
+                Debug.Log("IDamageableオブジェクトにヒット！弾痕は生成しません。");
+                return;
+            }
+
             Vector3 position = hitPoint + hitNormal * 0.01f;
 
             // Rotate quad so it faces away from the surface

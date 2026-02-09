@@ -9,7 +9,26 @@ namespace Develop.Gun
             _presenter = presenter;
         }
         public Vector2 LookInput { get; set; }
-        public Quaternion TargetSwayRotation { get; set; }
+        public Quaternion SwayRotation
+        {
+            get => _swayTf.localRotation;
+            set => _swayTf.localRotation = value;
+        }
+        public Vector3 SwayPosition
+        {
+            get => _swayTf.localPosition;
+            set => _swayTf.localPosition = value;
+        }
+        public Quaternion RecoilRotation
+        {
+            get => _recoilTf.localRotation;
+            set => _recoilTf.localRotation = value;
+        }
+        public Vector3 RecoilPosition
+        {
+            get => _recoilTf.localPosition;
+            set => _recoilTf.localPosition = value;
+        }
         public Vector3 Position
         {
             get => _tryTf.localPosition;
@@ -56,6 +75,8 @@ namespace Develop.Gun
         [SerializeField] private Transform _defaultPosition;
         [SerializeField] private Transform _firePosition;
         [SerializeField] private Transform _swayTf;
+        [SerializeField] private Transform _recoilTf;
+        [SerializeField] private Transform _attackTf;
         private Animator _animator;
         private Animator _anim => _animator ??= GetComponent<Animator>();
         private GunPresenter _presenter;
@@ -65,12 +86,7 @@ namespace Develop.Gun
         private ParticleSystem _muzuleFlash;
         [SerializeField]
         private GameObject _bulletHolePrefab;
-
-        private void Awake()
-        {
-            TargetSwayRotation = transform.localRotation;
-        }
-
+        
         private void OnDrawGizmos()
         {
 
@@ -83,11 +99,6 @@ namespace Develop.Gun
         private void Update()
         {
             _presenter.Update();
-        }
-
-        private void LateUpdate()
-        {
-          _swayTf.localRotation = TargetSwayRotation;
         }
     }
 

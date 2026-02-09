@@ -1,47 +1,25 @@
 ﻿using Develop.Gun;
-using Develop.Gun.Interface;
 using Develop.Interface;
 using Develop.Player;
-using Develop.Player.Camera;
-using Develop.Player.Entity;
-using Develop.Player.Move.Strategies;
-using Develop.Player.Usecase;
 using Develop.UI;
 
 namespace Develop.DI
 {
     public class DataContainer
     {
-        public PlayerPresenter PlayerPresenter { get; private set; }
-        public HealthEntity HealthEntity { get; private set; }
-        public GunPresenter GunPresenter { get; private set; }
+        public PlayerDataContainer PlayerDataContainer { get; }
+        public GunDataContainer GunDataContainer { get; }
         public InputBuffer InputBuffer { get; private set; }
 
-        public void Init(IMovableBody body, PlayerConfig config,IPlayer player,GunConfig gunConfig,IGunView gunView)
+        public DataContainer(PlayerDataContainer playerDataContainer, GunDataContainer gunDataContainer)
         {
-            var healthEntity = new HealthEntity(100);
-            var playerEntity = new PlayerEntity();
-            var cameralook = new CameraLook(body,config.LookSpeed,config.MaxAngle);
-            var walkStrategy = new WalkStrategy(config.WalkSpeed);
-            var runStrategy = new RunStrategy(config.RunSpeed);
-            var slideStrategy = new SlideStrategy(config.DecelerationRate,config.EndSpeed,config.GroundLayer,config.GroundCheckDistance);
-            var movePlayer = new MovePlayerUseCase(playerEntity,body,walkStrategy,runStrategy,slideStrategy,cameralook);
-            PlayerPresenter = new PlayerPresenter(movePlayer);
+            PlayerDataContainer = playerDataContainer;
+            GunDataContainer = gunDataContainer;
+        }
 
-            var gunEntity = new GunEntity(gunConfig);
-            var gunFire = new GunFire();
-            var gunEffect = new GunEffect(gunView);
-            var gunAim = new GunAim(gunView,gunConfig.AimToSpeed);
-            var gunAnim = new GunAnimController(gunView.GunAnimator);
-            
-            var gunLookInputSource = new GunLookInputSource(); // Instantiate the new input source
-
-            var gun = new GunUseCase(gunEntity,gunFire,gunConfig,gunView,gunEffect,gunAim,gunAnim, gunLookInputSource); // Pass to GunUseCase
-            gun.Init();
-            GunPresenter = new GunPresenter(gun, gunLookInputSource); // Pass to GunPresenter
-            // Removed gun.SetPresenter(GunPresenter);
-
-            InputBuffer = new InputBuffer(player,PlayerPresenter,GunPresenter);
+        public void Init(IPlayer player)
+        {
+            InputBuffer = new InputBuffer(player, PlayerDataContainer.PlayerPresenter, GunDataContainer.GunPresenter);
         }
     }
 }
