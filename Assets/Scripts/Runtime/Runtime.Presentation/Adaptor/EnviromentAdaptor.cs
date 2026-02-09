@@ -4,13 +4,20 @@ using VContainer;
 
 public class EnviromentAdaptor : MonoBehaviour
 {
-    [SerializeField] GroundDetector _groundDetector;
+    
     [Inject] private IApplyEnvironmentState _applyEnvironmentState;
 
-    private void Update()
+
+    void OnCollisionEnter(Collision collision)
     {
-        _applyEnvironmentState?.ApplyEnvironment(
-            new Environment(_groundDetector.IsGround)
+          _applyEnvironmentState?.ApplyEnvironment(
+            new Environment(true)
+        );
+    }
+    void OnCollisionExit(Collision collision)
+    {
+          _applyEnvironmentState?.ApplyEnvironment(
+            new Environment(false)
         );
     }
 }
