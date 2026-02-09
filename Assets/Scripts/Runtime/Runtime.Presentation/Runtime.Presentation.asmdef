@@ -3,7 +3,8 @@
   "rootNamespace": "Runtime",
   "references": [
     "Runtime.Interfaces",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "VContainer"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

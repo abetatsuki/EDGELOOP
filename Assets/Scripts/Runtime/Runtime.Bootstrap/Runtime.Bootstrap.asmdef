@@ -4,7 +4,9 @@
   "references": [
     "Runtime.Interfaces",
     "Runtime.Usecase",
-    "Runtime.Presentation"
+    "Runtime.Presentation",
+    "VContainer",
+    "VContainer.Unity"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
