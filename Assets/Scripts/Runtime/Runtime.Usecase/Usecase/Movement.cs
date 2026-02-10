@@ -11,6 +11,7 @@ namespace Runtime
         private readonly IDashPhysicsOutput _dashPhysicsOutput;
         private CharacterConfigData _characterConfigData;
         private MoveInputData _lastMoveInput;
+        private bool _isSprinting;
 
         public Movement(
             CharacterEntity characterEntity,
@@ -51,7 +52,8 @@ namespace Runtime
             float magnitude = MathF.Sqrt((data.X * data.X) + (data.Y * data.Y));
             float speedScale = MathF.Min(1f, magnitude);
 
-            float moveSpeed = _characterConfigData.MoveSpeed * speedScale;
+            float baseSpeed = _isSprinting ? _characterConfigData.DashPower : _characterConfigData.MoveSpeed;
+            float moveSpeed = baseSpeed * speedScale;
             float x = 0f;
             float y = 0f;
             if (magnitude > 0.0001f)
@@ -65,20 +67,7 @@ namespace Runtime
 
         public void Handle(DashInputData data)
         {
-            if (!data.IsPressed)
-            {
-                return;
-            }
-
-            float magnitude = MathF.Sqrt((_lastMoveInput.X * _lastMoveInput.X) + (_lastMoveInput.Y * _lastMoveInput.Y));
-            if (magnitude <= 0.0001f)
-            {
-                return;
-            }
-
-            float x = _lastMoveInput.X / magnitude;
-            float y = _lastMoveInput.Y / magnitude;
-            _dashPhysicsOutput.ApplyDash(new DashCommand(x, y, _characterConfigData.DashPower));
+            _isSprinting = data.IsPressed;
         }
     }
 }
