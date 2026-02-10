@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bea02b865dceb247b7bd9dbd1b15c68, type: 3}
   m_Name: CharacterConfig
   m_EditorClassIdentifier: Runtime.Interfaces::Runtime.CharacterConfig
+  _jumpPower: 10

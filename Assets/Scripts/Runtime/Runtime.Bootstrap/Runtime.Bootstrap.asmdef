@@ -2,9 +2,9 @@
     "name": "Runtime.Bootstrap",
     "rootNamespace": "Runtime",
     "references": [
-        "Runtime.Interfaces",
-        "Runtime.Usecase",
         "Runtime.Presentation",
+        "Runtime.Usecase",
+        "Runtime.Interfaces",
         "VContainer",
         "VContainer.Unity"
     ],

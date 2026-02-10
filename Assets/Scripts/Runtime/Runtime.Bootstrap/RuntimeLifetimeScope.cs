@@ -14,11 +14,16 @@ namespace Runtime
             builder.Register<CharacterEntity>(Lifetime.Singleton);
 
             // Usecases (contract only)
-            builder.Register<Movement>(Lifetime.Singleton).As<IJumpInputPort>().As<ICharacterConfigPort>();
+            builder.Register<Movement>(Lifetime.Singleton)
+                .As<IJumpInputPort>()
+                .As<IMoveInputPort>()
+                .As<ICharacterConfigPort>();
             builder.Register<Enviroment>(Lifetime.Singleton).As<IApplyEnvironmentState>();
 
             // Presentation components
-            builder.RegisterComponentInHierarchy<RigidBodyAdaptor>().As<IJumpPhysicsOutput>();
+            builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
+                .As<IJumpPhysicsOutput>()
+                .As<IMovePhysicsOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
             builder.RegisterComponentInHierarchy<CharacterDataAdaptor>();
