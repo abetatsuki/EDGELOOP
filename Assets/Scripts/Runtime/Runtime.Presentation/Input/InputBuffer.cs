@@ -9,6 +9,7 @@ namespace Runtime
     {
         [Inject] private IJumpInputPort _jumpPort;
         [Inject] private IMoveInputPort _movePort;
+        [Inject] private IDashInputPort _dashPort;
 
         public void OnJump(InputAction.CallbackContext context)
         {
@@ -28,12 +29,26 @@ namespace Runtime
             _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
         }
 
+        public void OnDash(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _dashPort.Handle(new DashInputData { IsPressed = true });
+            }
+            else if (context.canceled)
+            {
+                _dashPort.Handle(new DashInputData { IsPressed = false });
+            }
+        }
+
         private PlayerInput _playerInput;
 
         private const string JUMP_ACTION = "Jump";
         private const string MOVE_ACTION = "Move";
+        private const string DASH_ACTION = "Sprint";
         private InputAction _jumpAction;
         private InputAction _moveAction;
+        private InputAction _dashAction;
 
         private void OnEnable()
         {
@@ -52,6 +67,11 @@ namespace Runtime
                 _moveAction.performed -= OnMove;
                 _moveAction.canceled -= OnMove;
             }
+            if (_dashAction != null)
+            {
+                _dashAction.performed -= OnDash;
+                _dashAction.canceled -= OnDash;
+            }
         }
 
         private void PlayerInputSetUp()
@@ -64,6 +84,10 @@ namespace Runtime
             _moveAction = _playerInput.actions[MOVE_ACTION];
             _moveAction.performed += OnMove;
             _moveAction.canceled += OnMove;
+
+            _dashAction = _playerInput.actions[DASH_ACTION];
+            _dashAction.performed += OnDash;
+            _dashAction.canceled += OnDash;
         }
     }
 }
