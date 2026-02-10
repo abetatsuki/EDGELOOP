@@ -10,7 +10,7 @@ namespace Runtime
         }
         public bool CanDash()
         {
-            return !_isDashing;
+            return _isDashing;
         }
 
         public void SetIsGround(bool isGround)
