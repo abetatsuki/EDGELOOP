@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -10,6 +10,12 @@ namespace Runtime
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(_characterConfig);
+            var characterConfigData = new CharacterConfigData(
+                _characterConfig.JumpPower,
+                _characterConfig.MoveSpeed,
+                _characterConfig.DashPower
+            );
+            builder.RegisterInstance(characterConfigData);
             // Core
             builder.Register<CharacterEntity>(Lifetime.Singleton);
 
@@ -32,3 +38,4 @@ namespace Runtime
         }
     }
 }
+

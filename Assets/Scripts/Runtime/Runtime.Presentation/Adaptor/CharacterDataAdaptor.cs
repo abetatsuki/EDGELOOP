@@ -20,7 +20,7 @@ namespace Runtime
                 _characterConfig.MoveSpeed,
                 _characterConfig.DashPower
             );
-            _characterConfigPort.SetCharacterConfig(characterConfigData);
+            _characterConfigPort?.SetCharacterConfig(characterConfigData);
         }
     }
 }

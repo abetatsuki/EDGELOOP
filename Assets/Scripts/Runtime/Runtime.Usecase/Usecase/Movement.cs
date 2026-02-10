@@ -1,9 +1,9 @@
-
+﻿
 using System;
 
 namespace Runtime
 {
-    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort, ICharacterConfigPort
+    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort
     {
         private readonly CharacterEntity _characterEntity;
         private readonly IJumpPhysicsOutput _jumpPhysicsOutput;
@@ -13,20 +13,18 @@ namespace Runtime
 
         public Movement(
             CharacterEntity characterEntity,
+            CharacterConfigData characterConfigData,
             IJumpPhysicsOutput jumpPhysicsOutput,
             IMovePhysicsOutput movePhysicsOutput,
             IDashPhysicsOutput dashPhysicsOutput)
         {
             _characterEntity = characterEntity;
+            _characterConfigData = characterConfigData;
             _jumpPhysicsOutput = jumpPhysicsOutput;
             _movePhysicsOutput = movePhysicsOutput;
             _dashPhysicsOutput = dashPhysicsOutput;
         }
 
-        public void SetCharacterConfig(CharacterConfigData characterConfigData)
-        {
-            _characterConfigData = characterConfigData;
-        }
         public void Handle(JumpInputData data)
         {
             if (!_characterEntity.CanJump())
@@ -68,3 +66,4 @@ namespace Runtime
         }
     }
 }
+
