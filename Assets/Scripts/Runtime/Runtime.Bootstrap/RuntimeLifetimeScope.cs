@@ -23,8 +23,7 @@ namespace Runtime
             builder.Register<Movement>(Lifetime.Singleton)
                 .As<IJumpInputPort>()
                 .As<IMoveInputPort>()
-                .As<IDashInputPort>()
-                .As<ICharacterConfigPort>();
+                .As<IDashInputPort>();
             builder.Register<Environment>(Lifetime.Singleton).As<IApplyEnvironmentState>();
 
             // Presentation components
@@ -34,7 +33,6 @@ namespace Runtime
                 .As<IDashPhysicsOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
-            builder.RegisterComponentInHierarchy<CharacterDataAdaptor>();
         }
     }
 }
