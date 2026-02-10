@@ -11,13 +11,13 @@ public class EnviromentAdaptor : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
           _applyEnvironmentState?.ApplyEnvironment(
-            new Environment(true)
+            new EnvironmentInputData(true)
         );
     }
     private void OnCollisionExit(Collision collision)
     {
           _applyEnvironmentState?.ApplyEnvironment(
-            new Environment(false)
+            new EnvironmentInputData(false)
         );
     }
 }

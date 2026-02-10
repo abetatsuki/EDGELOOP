@@ -2,16 +2,16 @@
 
 namespace Runtime
 {
-    public class Enviroment : IApplyEnvironmentState
+    public class Environment : IApplyEnvironmentState
     {
         private readonly CharacterEntity _characterEntity;
 
-        public Enviroment(CharacterEntity characterEntity)
+        public Environment(CharacterEntity characterEntity)
         {
             _characterEntity = characterEntity;
         }
 
-        public void ApplyEnvironment(Environment environment)
+        public void ApplyEnvironment(EnvironmentInputData environment)
         {
             _characterEntity.SetIsGround(environment.IsGround);
         }

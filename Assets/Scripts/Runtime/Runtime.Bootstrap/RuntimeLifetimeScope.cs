@@ -19,7 +19,7 @@ namespace Runtime
                 .As<IMoveInputPort>()
                 .As<IDashInputPort>()
                 .As<ICharacterConfigPort>();
-            builder.Register<Enviroment>(Lifetime.Singleton).As<IApplyEnvironmentState>();
+            builder.Register<Environment>(Lifetime.Singleton).As<IApplyEnvironmentState>();
 
             // Presentation components
             builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
