@@ -17,7 +17,8 @@ namespace Runtime
         {
             CharacterConfigData characterConfigData = new CharacterConfigData(
                 _characterConfig.JumpPower,
-                _characterConfig.MoveSpeed
+                _characterConfig.MoveSpeed,
+                _characterConfig.DashPower
             );
             _characterConfigPort.SetCharacterConfig(characterConfigData);
         }
