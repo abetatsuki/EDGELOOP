@@ -23,12 +23,6 @@ namespace Runtime
             }
         }
 
-        public void OnMove(InputAction.CallbackContext context)
-        {
-            Vector2 value = context.ReadValue<Vector2>();
-            _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
-        }
-
         public void OnDash(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -55,6 +49,16 @@ namespace Runtime
             PlayerInputSetUp();
         }
 
+        private void Update()
+        {
+            if (_moveAction == null)
+            {
+                return;
+            }
+            Vector2 value = _moveAction.ReadValue<Vector2>();
+            _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
+        }
+
         private void OnDisable()
         {
             if (_jumpAction != null)
@@ -62,11 +66,7 @@ namespace Runtime
                 _jumpAction.performed -= OnJump;
                 _jumpAction.canceled -= OnJump;
             }
-            if (_moveAction != null)
-            {
-                _moveAction.performed -= OnMove;
-                _moveAction.canceled -= OnMove;
-            }
+
             if (_dashAction != null)
             {
                 _dashAction.performed -= OnDash;
@@ -82,8 +82,6 @@ namespace Runtime
             _jumpAction.canceled += OnJump;
 
             _moveAction = _playerInput.actions[MOVE_ACTION];
-            _moveAction.performed += OnMove;
-            _moveAction.canceled += OnMove;
 
             _dashAction = _playerInput.actions[DASH_ACTION];
             _dashAction.performed += OnDash;
