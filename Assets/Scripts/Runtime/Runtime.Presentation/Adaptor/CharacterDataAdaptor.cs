@@ -15,7 +15,10 @@ namespace Runtime
         }
         private void SetCharacterConfig()
         {
-            CharacterConfigData characterConfigData = new CharacterConfigData(_characterConfig.JumpPower); 
+            CharacterConfigData characterConfigData = new CharacterConfigData(
+                _characterConfig.JumpPower,
+                _characterConfig.MoveSpeed
+            );
             _characterConfigPort.SetCharacterConfig(characterConfigData);
         }
     }
