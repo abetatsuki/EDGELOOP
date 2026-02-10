@@ -1,5 +1,4 @@
 using UnityEngine;
-using VContainer;
 namespace Runtime
 {
     public class CharacterEntity
