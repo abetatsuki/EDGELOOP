@@ -24,7 +24,7 @@ namespace Runtime
                 .As<IJumpInputPort>()
                 .As<IMoveInputPort>()
                 .As<IDashInputPort>();
-            builder.Register<Environment>(Lifetime.Singleton).As<IApplyEnvironmentState>();
+            builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
 
             // Presentation components
             builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
@@ -36,4 +36,5 @@ namespace Runtime
         }
     }
 }
+
 

@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 namespace Runtime
 {
-    public interface IApplyEnvironmentState
+    public interface IEnvironmentInputPort
     {
        public void ApplyEnvironment(EnvironmentInputData environment);
     }

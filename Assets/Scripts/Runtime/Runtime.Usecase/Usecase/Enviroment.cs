@@ -1,8 +1,8 @@
-
+﻿
 
 namespace Runtime
 {
-    public class Environment : IApplyEnvironmentState
+    public class Environment : IEnvironmentInputPort
     {
         private readonly CharacterEntity _characterEntity;
 
@@ -17,3 +17,4 @@ namespace Runtime
         }
     }
 }
+
