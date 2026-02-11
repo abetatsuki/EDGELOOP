@@ -12,6 +12,14 @@ namespace Runtime
         {
             return _isDashing;
         }
+        public bool IsCrouching()
+        {
+            return _isCrouching;
+        }
+        public bool IsSliding()
+        {
+            return _isSliding;
+        }
 
         public void SetIsGround(bool isGround)
         {
@@ -21,8 +29,18 @@ namespace Runtime
         {
             _isDashing = isDashing;
         }
+        public void SetIsCrouching(bool isCrouching)
+        {
+            _isCrouching = isCrouching;
+        }
+        public void SetIsSliding(bool isSliding)
+        {
+            _isSliding = isSliding;
+        }
         private bool _isGround;
         private bool _isDashing;
+        private bool _isCrouching;
+        private bool _isSliding;
 
     }
 }

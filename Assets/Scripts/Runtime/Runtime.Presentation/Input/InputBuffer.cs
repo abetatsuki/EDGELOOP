@@ -10,6 +10,7 @@ namespace Runtime
         [Inject] private IJumpInputPort _jumpPort;
         [Inject] private IMoveInputPort _movePort;
         [Inject] private IDashInputPort _dashPort;
+        [Inject] private ISlideInputPort _slidePort;
         [Inject] private ILookInputPort _lookPort;
 
         public void OnJump(InputAction.CallbackContext context)
@@ -35,16 +36,29 @@ namespace Runtime
                 _dashPort.Handle(new DashInputData { IsPressed = false });
             }
         }
+        public void OnSlide(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _slidePort.Handle(new SlideInputData { IsPressed = true });
+            }
+            else if (context.canceled)
+            {
+                _slidePort.Handle(new SlideInputData { IsPressed = false });
+            }
+        }
 
         private PlayerInput _playerInput;
 
         private const string JUMP_ACTION = "Jump";
         private const string MOVE_ACTION = "Move";
         private const string DASH_ACTION = "Sprint";
+        private const string SLIDE_ACTION = "Slide";
         private const string LOOK_ACTION = "Look";
         private InputAction _jumpAction;
         private InputAction _moveAction;
         private InputAction _dashAction;
+        private InputAction _slideAction;
         private InputAction _lookAction;
 
         private void OnEnable()
@@ -80,6 +94,11 @@ namespace Runtime
                 _dashAction.performed -= OnDash;
                 _dashAction.canceled -= OnDash;
             }
+            if (_slideAction != null)
+            {
+                _slideAction.performed -= OnSlide;
+                _slideAction.canceled -= OnSlide;
+            }
         }
 
         private void PlayerInputSetUp()
@@ -94,6 +113,10 @@ namespace Runtime
             _dashAction = _playerInput.actions[DASH_ACTION];
             _dashAction.performed += OnDash;
             _dashAction.canceled += OnDash;
+
+            _slideAction = _playerInput.actions[SLIDE_ACTION];
+            _slideAction.performed += OnSlide;
+            _slideAction.canceled += OnSlide;
 
             _lookAction = _playerInput.actions[LOOK_ACTION];
         }

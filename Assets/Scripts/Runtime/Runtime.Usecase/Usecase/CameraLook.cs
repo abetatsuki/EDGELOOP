@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace Runtime
 {
-    public class CameraLook : ILookInputPort
+    public class Lookment : ILookInputPort
     {
         private readonly ICameraRotationOutput _cameraRotationOutput;
         private readonly CameraConfigData _cameraConfigData;
         private readonly IControlRotationReader _controlRotationReader;
         private readonly IControlRotationWriter _controlRotationWriter;
 
-        public CameraLook(
+        public Lookment(
             ICameraRotationOutput cameraRotationOutput,
             CameraConfigData cameraConfigData,
             IControlRotationReader controlRotationReader,

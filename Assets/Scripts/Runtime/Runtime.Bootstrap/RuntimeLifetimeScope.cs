@@ -31,8 +31,9 @@ namespace Runtime
             builder.Register<Movement>(Lifetime.Singleton)
                 .As<IJumpInputPort>()
                 .As<IMoveInputPort>()
-                .As<IDashInputPort>();
-            builder.Register<CameraLook>(Lifetime.Singleton)
+                .As<IDashInputPort>()
+                .As<ISlideInputPort>();
+            builder.Register<Lookment>(Lifetime.Singleton)
                 .As<ILookInputPort>();
             builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
 
@@ -40,7 +41,8 @@ namespace Runtime
             builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
                 .As<IJumpPhysicsOutput>()
                 .As<IMovePhysicsOutput>()
-                .As<IDashPhysicsOutput>();
+                .As<IDashPhysicsOutput>()
+                .As<ISlideMotionOutput>();
             builder.RegisterComponentInHierarchy<FpsCameraAdaptor>()
                 .As<ICameraRotationOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
@@ -48,5 +50,4 @@ namespace Runtime
         }
     }
 }
-
 

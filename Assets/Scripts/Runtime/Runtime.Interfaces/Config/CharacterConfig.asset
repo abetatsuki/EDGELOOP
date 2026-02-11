@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: CharacterConfig
   m_EditorClassIdentifier: Runtime.Interfaces::Runtime.CharacterConfig
   _jumpPower: 10
+  _moveSpeed: 3
+  _dashPower: 8
+  _lookSpeed: 0.1
+  _maxPitch: 80
