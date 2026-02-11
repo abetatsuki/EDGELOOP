@@ -8,7 +8,11 @@ namespace Runtime
         {
             return _isGround;
         }
-        public bool CanDash()
+        public bool IsSprinting()
+        {
+            return _isDashing;
+        }
+        public bool IsDashing()
         {
             return _isDashing;
         }
