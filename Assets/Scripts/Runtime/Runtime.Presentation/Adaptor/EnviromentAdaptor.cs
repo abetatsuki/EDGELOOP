@@ -1,16 +1,24 @@
-using Runtime;
+﻿using Runtime;
 using UnityEngine;
 using VContainer;
 
 public class EnviromentAdaptor : MonoBehaviour
 {
-    [SerializeField] GroundDetector _groundDetector;
-    [Inject] private IApplyEnvironmentState _applyEnvironmentState;
+    
+    [Inject] private IEnvironmentInputPort _applyEnvironmentState;
 
-    private void Update()
+
+    private void OnCollisionEnter(Collision collision)
     {
-        _applyEnvironmentState?.ApplyEnvironment(
-            new Environment(_groundDetector.IsGround)
+          _applyEnvironmentState?.ApplyEnvironment(
+            new EnvironmentInputData(true)
+        );
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+          _applyEnvironmentState?.ApplyEnvironment(
+            new EnvironmentInputData(false)
         );
     }
 }
+

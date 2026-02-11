@@ -1,13 +1,13 @@
-using UnityEngine;
+﻿using UnityEngine;
 namespace Runtime
 {
-    public interface IApplyEnvironmentState
+    public interface IEnvironmentInputPort
     {
-       public void ApplyEnvironment(Environment environment);
+       public void ApplyEnvironment(EnvironmentInputData environment);
     }
-    public struct Environment
+    public struct EnvironmentInputData
     {
-        public Environment(bool isGround)
+        public EnvironmentInputData(bool isGround)
         {
             IsGround = isGround;
         }

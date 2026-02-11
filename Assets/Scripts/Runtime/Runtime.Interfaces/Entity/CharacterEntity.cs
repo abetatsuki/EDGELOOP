@@ -3,21 +3,26 @@ namespace Runtime
 {
     public class CharacterEntity
     {
+
         public bool CanJump()
         {
             return _isGround;
         }
-
-        public float ConsueJumpPower()
+        public bool CanDash()
         {
-            return 10f;
+            return _isDashing;
         }
 
         public void SetIsGround(bool isGround)
         {
             _isGround = isGround;
         }
+        public void SetIsDashing(bool isDashing)
+        {
+            _isDashing = isDashing;
+        }
         private bool _isGround;
+        private bool _isDashing;
 
     }
 }
