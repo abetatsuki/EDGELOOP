@@ -23,6 +23,9 @@ namespace Runtime
             builder.RegisterInstance(cameraConfigData);
             // Core
             builder.Register<CharacterEntity>(Lifetime.Singleton);
+            builder.Register<ControlRotationState>(Lifetime.Singleton)
+                .As<IControlRotationReader>()
+                .As<IControlRotationWriter>();
 
             // Usecases (contract only)
             builder.Register<Movement>(Lifetime.Singleton)

@@ -11,7 +11,7 @@ namespace Runtime
         {
             if (_bodyTransform != null)
             {
-                _bodyTransform.Rotate(0f, command.YawDelta, 0f, Space.World);
+                _bodyTransform.rotation = Quaternion.Euler(0f, command.Yaw, 0f);
             }
 
             if (_cameraTransform != null)

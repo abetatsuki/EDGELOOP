@@ -9,6 +9,7 @@ namespace Runtime
         private readonly IJumpPhysicsOutput _jumpPhysicsOutput;
         private readonly IMovePhysicsOutput _movePhysicsOutput;
         private readonly IDashPhysicsOutput _dashPhysicsOutput;
+        private readonly IControlRotationReader _controlRotationReader;
         private CharacterConfigData _characterConfigData;
 
         public Movement(
@@ -16,13 +17,15 @@ namespace Runtime
             CharacterConfigData characterConfigData,
             IJumpPhysicsOutput jumpPhysicsOutput,
             IMovePhysicsOutput movePhysicsOutput,
-            IDashPhysicsOutput dashPhysicsOutput)
+            IDashPhysicsOutput dashPhysicsOutput,
+            IControlRotationReader controlRotationReader)
         {
             _characterEntity = characterEntity;
             _characterConfigData = characterConfigData;
             _jumpPhysicsOutput = jumpPhysicsOutput;
             _movePhysicsOutput = movePhysicsOutput;
             _dashPhysicsOutput = dashPhysicsOutput;
+            _controlRotationReader = controlRotationReader;
         }
 
         public void Handle(JumpInputData data)
@@ -49,15 +52,22 @@ namespace Runtime
 
             float baseSpeed = _characterEntity.CanDash() ? _characterConfigData.DashPower : _characterConfigData.MoveSpeed;
             float moveSpeed = baseSpeed * speedScale;
-            float x = 0f;
-            float y = 0f;
+            float localX = 0f;
+            float localY = 0f;
             if (magnitude > 0.0001f)
             {
-                x = data.X / magnitude;
-                y = data.Y / magnitude;
+                localX = data.X / magnitude;
+                localY = data.Y / magnitude;
             }
 
-            _movePhysicsOutput.ApplyMove(new MoveCommand(x, y, moveSpeed));
+            float yawRad = _controlRotationReader.GetControlRotation().Yaw * (MathF.PI / 180f);
+            float cos = MathF.Cos(yawRad);
+            float sin = MathF.Sin(yawRad);
+
+            float worldX = (localX * cos) + (localY * sin);
+            float worldY = (-localX * sin) + (localY * cos);
+
+            _movePhysicsOutput.ApplyMove(new MoveCommand(worldX, worldY, moveSpeed));
         }
 
         public void Handle(DashInputData data)

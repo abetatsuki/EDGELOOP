@@ -1,8 +1,8 @@
 namespace Runtime
 {
-    public class CameraLookCommand
+    public struct ControlRotationData
     {
-        public CameraLookCommand(float yaw, float pitch)
+        public ControlRotationData(float yaw, float pitch)
         {
             Yaw = yaw;
             Pitch = pitch;
