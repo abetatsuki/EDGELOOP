@@ -11,6 +11,7 @@ namespace Runtime
         [Inject] private IMoveInputPort _movePort;
         [Inject] private IDashInputPort _dashPort;
         [Inject] private ISlideInputPort _slidePort;
+        [Inject] private IRunSpeedInputPort _runSpeedPort;
         [Inject] private ILookInputPort _lookPort;
 
         public void OnJump(InputAction.CallbackContext context)
@@ -72,6 +73,16 @@ namespace Runtime
             {
                 Vector2 value = _moveAction.ReadValue<Vector2>();
                 _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
+            }
+
+            if (Mouse.current != null)
+            {
+                float scrollY = Mouse.current.scroll.ReadValue().y;
+                if (Mathf.Abs(scrollY) > 0.001f)
+                {
+                    float direction = Mathf.Sign(scrollY);
+                    _runSpeedPort.Handle(new RunSpeedInputData { Delta = direction });
+                }
             }
 
             if (_lookAction != null)
