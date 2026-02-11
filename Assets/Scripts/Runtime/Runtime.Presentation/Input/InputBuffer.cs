@@ -10,6 +10,7 @@ namespace Runtime
         [Inject] private IJumpInputPort _jumpPort;
         [Inject] private IMoveInputPort _movePort;
         [Inject] private IDashInputPort _dashPort;
+        [Inject] private ILookInputPort _lookPort;
 
         public void OnJump(InputAction.CallbackContext context)
         {
@@ -40,9 +41,11 @@ namespace Runtime
         private const string JUMP_ACTION = "Jump";
         private const string MOVE_ACTION = "Move";
         private const string DASH_ACTION = "Sprint";
+        private const string LOOK_ACTION = "Look";
         private InputAction _jumpAction;
         private InputAction _moveAction;
         private InputAction _dashAction;
+        private InputAction _lookAction;
 
         private void OnEnable()
         {
@@ -51,12 +54,17 @@ namespace Runtime
 
         private void Update()
         {
-            if (_moveAction == null)
+            if (_moveAction != null)
             {
-                return;
+                Vector2 value = _moveAction.ReadValue<Vector2>();
+                _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
             }
-            Vector2 value = _moveAction.ReadValue<Vector2>();
-            _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
+
+            if (_lookAction != null)
+            {
+                Vector2 lookValue = _lookAction.ReadValue<Vector2>();
+                _lookPort.Handle(new LookInputData { X = lookValue.x, Y = lookValue.y });
+            }
         }
 
         private void OnDisable()
@@ -86,6 +94,8 @@ namespace Runtime
             _dashAction = _playerInput.actions[DASH_ACTION];
             _dashAction.performed += OnDash;
             _dashAction.canceled += OnDash;
+
+            _lookAction = _playerInput.actions[LOOK_ACTION];
         }
     }
 }
