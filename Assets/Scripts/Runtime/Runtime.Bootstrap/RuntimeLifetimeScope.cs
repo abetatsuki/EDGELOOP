@@ -7,13 +7,17 @@ namespace Runtime
     public class RuntimeLifetimeScope : LifetimeScope
     {
         [SerializeField] private CharacterConfig _characterConfig;
+        [SerializeField] private MoveSpeedUiAdaptor _moveSpeedUiAdaptor;
+        [SerializeField] private MoveSpeedUiView[] _moveSpeedUiViews;
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(_characterConfig);
             var characterConfigData = new CharacterConfigData(
                 _characterConfig.JumpPower,
                 _characterConfig.MoveSpeed,
-                _characterConfig.DashPower
+                _characterConfig.DashPower,
+                _characterConfig.RunMinRatio,
+                _characterConfig.RunScrollStep
             );
             builder.RegisterInstance(characterConfigData);
             var cameraConfigData = new CameraConfigData(
@@ -23,17 +27,16 @@ namespace Runtime
             builder.RegisterInstance(cameraConfigData);
             // Core
             builder.Register<CharacterEntity>(Lifetime.Singleton);
-            builder.Register<ControlRotationState>(Lifetime.Singleton)
-                .As<IControlRotationReader>()
-                .As<IControlRotationWriter>();
 
             // Usecases (contract only)
             builder.Register<Movement>(Lifetime.Singleton)
                 .As<IJumpInputPort>()
                 .As<IMoveInputPort>()
                 .As<IDashInputPort>()
-                .As<ISlideInputPort>();
-            builder.Register<Lookment>(Lifetime.Singleton)
+                .As<ISlideInputPort>()
+                .As<IRunSpeedInputPort>()
+                .As<IControlRotationOutput>();
+            builder.Register<CameraLook>(Lifetime.Singleton)
                 .As<ILookInputPort>();
             builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
 
@@ -47,7 +50,26 @@ namespace Runtime
                 .As<ICameraRotationOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
+
+            if (_moveSpeedUiAdaptor != null)
+            {
+                builder.RegisterComponent(_moveSpeedUiAdaptor)
+                    .As<IMoveSpeedOutput>();
+            }
+
+            if (_moveSpeedUiViews != null)
+            {
+                for (int i = 0; i < _moveSpeedUiViews.Length; i++)
+                {
+                    MoveSpeedUiView view = _moveSpeedUiViews[i];
+                    if (view == null)
+                    {
+                        continue;
+                    }
+                    builder.RegisterComponent(view)
+                        .As<IMoveSpeedUiInput>();
+                }
+            }
         }
     }
 }
-
