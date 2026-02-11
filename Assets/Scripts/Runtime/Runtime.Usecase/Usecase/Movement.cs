@@ -1,19 +1,23 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace Runtime
 {
-    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort, ISlideInputPort
+    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort, ISlideInputPort, IRunSpeedInputPort, IControlRotationOutput
     {
         private readonly CharacterEntity _characterEntity;
         private readonly IJumpPhysicsOutput _jumpPhysicsOutput;
         private readonly IMovePhysicsOutput _movePhysicsOutput;
         private readonly IDashPhysicsOutput _dashPhysicsOutput;
         private readonly ISlideMotionOutput _slideMotionOutput;
-        private readonly IControlRotationReader _controlRotationReader;
+        private readonly IReadOnlyList<IMoveSpeedOutput> _moveSpeedOutputs;
         private CharacterConfigData _characterConfigData;
         private MoveInputData _lastMoveInput;
+        private ControlRotationData _controlRotationData;
         private const float INPUT_THRESHOLD = 0.0001f;
+        private const float RUN_MAX_RATIO = 1f;
+        private float _runSpeedRatio = RUN_MAX_RATIO;
 
         public Movement(
             CharacterEntity characterEntity,
@@ -22,7 +26,7 @@ namespace Runtime
             IMovePhysicsOutput movePhysicsOutput,
             IDashPhysicsOutput dashPhysicsOutput,
             ISlideMotionOutput slideMotionOutput,
-            IControlRotationReader controlRotationReader)
+            IReadOnlyList<IMoveSpeedOutput> moveSpeedOutputs)
         {
             _characterEntity = characterEntity;
             _characterConfigData = characterConfigData;
@@ -30,7 +34,7 @@ namespace Runtime
             _movePhysicsOutput = movePhysicsOutput;
             _dashPhysicsOutput = dashPhysicsOutput;
             _slideMotionOutput = slideMotionOutput;
-            _controlRotationReader = controlRotationReader;
+            _moveSpeedOutputs = moveSpeedOutputs;
         }
 
         public void Handle(JumpInputData data)
@@ -57,7 +61,8 @@ namespace Runtime
             float magnitude = MathF.Sqrt((data.X * data.X) + (data.Y * data.Y));
             float speedScale = MathF.Min(1f, magnitude);
 
-            float baseSpeed = _characterEntity.CanDash() ? _characterConfigData.DashPower : _characterConfigData.MoveSpeed;
+            float runSpeed = _characterConfigData.MoveSpeed * _runSpeedRatio;
+            float baseSpeed = _characterEntity.IsSprinting() ? _characterConfigData.DashPower : runSpeed;
             float moveSpeed = baseSpeed * speedScale;
             float localX = 0f;
             float localY = 0f;
@@ -70,11 +75,29 @@ namespace Runtime
             ToWorldDirection(localX, localY, out float worldX, out float worldY);
 
             _movePhysicsOutput.ApplyMove(new MoveCommand(worldX, worldY, moveSpeed));
+            MoveSpeedData speedData = new MoveSpeedData(moveSpeed, runSpeed, _characterConfigData.DashPower);
+            for (int i = 0; i < _moveSpeedOutputs.Count; i++)
+            {
+                _moveSpeedOutputs[i].Publish(speedData);
+            }
         }
 
         public void Handle(DashInputData data)
         {
            _characterEntity.SetIsDashing(data.IsPressed);
+        }
+
+        public void Handle(RunSpeedInputData data)
+        {
+            if (MathF.Abs(data.Delta) <= INPUT_THRESHOLD)
+            {
+                return;
+            }
+
+            _runSpeedRatio = Math.Clamp(
+                _runSpeedRatio + (data.Delta * Math.Max(0f, _characterConfigData.RunScrollStep)),
+                Math.Clamp(_characterConfigData.RunMinRatio, 0f, RUN_MAX_RATIO),
+                RUN_MAX_RATIO);
         }
 
         public void Handle(SlideInputData data)
@@ -106,9 +129,14 @@ namespace Runtime
             _slideMotionOutput.ApplySlideMotion(new SlideMotionCommand(SlideMode.Crouch, 0f, 0f, 0f));
         }
 
+        public void Publish(ControlRotationData data)
+        {
+            _controlRotationData = data;
+        }
+
         private void ToWorldDirection(float localX, float localY, out float worldX, out float worldY)
         {
-            float yawRad = _controlRotationReader.GetControlRotation().Yaw * (MathF.PI / 180f);
+            float yawRad = _controlRotationData.Yaw * (MathF.PI / 180f);
             float cos = MathF.Cos(yawRad);
             float sin = MathF.Sin(yawRad);
 
@@ -117,4 +145,3 @@ namespace Runtime
         }
     }
 }
-
