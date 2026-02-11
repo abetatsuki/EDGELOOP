@@ -17,7 +17,9 @@ namespace Runtime
                 _characterConfig.MoveSpeed,
                 _characterConfig.DashPower,
                 _characterConfig.RunMinRatio,
-                _characterConfig.RunScrollStep
+                _characterConfig.RunScrollStep,
+                _characterConfig.WallRunSpeed,
+                _characterConfig.WallRunDuration
             );
             builder.RegisterInstance(characterConfigData);
             var cameraConfigData = new CameraConfigData(
@@ -38,6 +40,8 @@ namespace Runtime
                 .As<IControlRotationOutput>();
             builder.Register<CameraLook>(Lifetime.Singleton)
                 .As<ILookInputPort>();
+            builder.Register<WallRun>(Lifetime.Singleton)
+                .As<IWallRunInputPort>();
             builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
 
             // Presentation components
@@ -45,11 +49,13 @@ namespace Runtime
                 .As<IJumpPhysicsOutput>()
                 .As<IMovePhysicsOutput>()
                 .As<IDashPhysicsOutput>()
-                .As<ISlideMotionOutput>();
+                .As<ISlideMotionOutput>()
+                .As<IWallRunPhysicsOutput>();
             builder.RegisterComponentInHierarchy<FpsCameraAdaptor>()
                 .As<ICameraRotationOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
+            builder.RegisterComponentInHierarchy<WallRunDetector>();
 
             if (_moveSpeedUiAdaptor != null)
             {
