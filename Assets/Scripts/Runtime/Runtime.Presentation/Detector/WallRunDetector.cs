@@ -8,31 +8,16 @@ namespace Runtime
     {
         [Inject] private IWallRunInputPort _wallRunInput;
 
-        private void OnCollisionEnter(Collision collision)
+private Vector2 direction;
+private float maxDistance;
+private LayerMask WallLayer;
+private bool isWallRunning;
+        public void GroundCheck()
         {
-            if (!collision.collider.CompareTag("Wall"))
+            if (Physics.Raycast(transform.position, direction, maxDistance, WallLayer))
             {
-                return;
+                isWallRunning = true;
             }
-            HandleContact(collision);
-        }
-
-        private void OnCollisionStay(Collision collision)
-        {
-            if (!collision.collider.CompareTag("Wall"))
-            {
-                return;
-            }
-            HandleContact(collision);
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            if (!collision.collider.CompareTag("Wall"))
-            {
-                return;
-            }
-            _wallRunInput.EndWallRun();
         }
 
         private void HandleContact(Collision collision)
@@ -42,7 +27,7 @@ namespace Runtime
             // Determine if wall is on left or right relative to forward
             float side = Vector3.Dot(normal, transform.right);
             bool isLeftSide = side > 0f; // normal pointing to right means wall on left
-            _wallRunInput.BeginWallRun(new WallRunContactData(isLeftSide));
+            _wallRunInput.BeginWallRun(new WallRunContactData(isLeftSide,isWallRunning));
         }
     }
 }
