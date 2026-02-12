@@ -8,11 +8,13 @@ namespace Runtime
 
     public struct WallRunContactData
     {
-        public WallRunContactData(bool isLeftSide)
+        public WallRunContactData(bool isLeftSide, bool isWallRun)
         {
             IsLeftSide = isLeftSide;
+            IsWallRun = isWallRun;
         }
 
+　　　　public bool IsWallRun { get; private set; }
         public bool IsLeftSide { get; private set; }
     }
 }
