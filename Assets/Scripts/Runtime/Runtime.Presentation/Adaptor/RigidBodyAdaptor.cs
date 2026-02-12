@@ -14,7 +14,7 @@ namespace Runtime
         private float _currentWallRoll;
         public void ApplyJump(JumpCommand command)
         {
-            _rigidbody.AddForce(Vector3.up * command.Power, ForceMode.Impulse);
+            _rigidbody.AddForce(Vector3.up * command.UpPower, ForceMode.Impulse);
          }
 
         public void ApplyMove(MoveCommand command)
