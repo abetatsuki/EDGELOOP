@@ -1,20 +1,17 @@
+using UnityEngine;
+
 namespace Runtime
 {
     public interface IWallRunInputPort
     {
-        void BeginWallRun(WallRunContactData data);
-        void EndWallRun();
+        void Handle(WallRunInputData data);
     }
 
-    public struct WallRunContactData
+    public struct WallRunInputData
     {
-        public WallRunContactData(bool isLeftSide, bool isWallRun)
-        {
-            IsLeftSide = isLeftSide;
-            IsWallRun = isWallRun;
-        }
-
-　　　　public bool IsWallRun { get; private set; }
-        public bool IsLeftSide { get; private set; }
+        public float MoveX;
+        public float MoveY;
+        public bool IsClimbPressed;
+        public bool IsDescendPressed;
     }
 }

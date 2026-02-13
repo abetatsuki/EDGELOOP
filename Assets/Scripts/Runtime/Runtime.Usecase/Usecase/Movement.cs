@@ -60,7 +60,6 @@ namespace Runtime
 
             float magnitude = MathF.Sqrt((data.X * data.X) + (data.Y * data.Y));
             float speedScale = MathF.Min(1f, magnitude);
-
             float runSpeed = _characterConfigData.MoveSpeed * _runSpeedRatio;
             float baseSpeed = _characterEntity.IsSprinting() ? _characterConfigData.DashPower : runSpeed;
             float moveSpeed = baseSpeed * speedScale;

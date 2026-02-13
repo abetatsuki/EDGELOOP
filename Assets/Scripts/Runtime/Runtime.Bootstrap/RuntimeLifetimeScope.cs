@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -18,8 +18,10 @@ namespace Runtime
                 _characterConfig.DashPower,
                 _characterConfig.RunMinRatio,
                 _characterConfig.RunScrollStep,
-                _characterConfig.WallRunSpeed,
-                _characterConfig.WallRunDuration
+                _characterConfig.WallRunForce,
+                _characterConfig.WallClimbSpeed,
+                _characterConfig.MaxWallRunTime,
+                _characterConfig.WallStickForce
             );
             builder.RegisterInstance(characterConfigData);
             var cameraConfigData = new CameraConfigData(
@@ -40,9 +42,12 @@ namespace Runtime
                 .As<IControlRotationOutput>();
             builder.Register<CameraLook>(Lifetime.Singleton)
                 .As<ILookInputPort>();
-            builder.Register<WallRun>(Lifetime.Singleton)
-                .As<IWallRunInputPort>();
             builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
+            builder.Register<WallRun>(Lifetime.Singleton)
+                .As<IWallRunInputPort>()
+                .As<IWallSenseInputPort>()
+                .As<IWallRunTickInputPort>()
+                .As<IControlRotationOutput>();
 
             // Presentation components
             builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
@@ -55,7 +60,8 @@ namespace Runtime
                 .As<ICameraRotationOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
-            builder.RegisterComponentInHierarchy<WallRunDetector>();
+            builder.RegisterComponentInHierarchy<WallDetecter>();
+            builder.RegisterComponentInHierarchy<WallRunDriver>();
 
             if (_moveSpeedUiAdaptor != null)
             {

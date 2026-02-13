@@ -1,26 +1,125 @@
+using System;
+using UnityEngine;
+
 namespace Runtime
 {
-    public class WallRun : IWallRunInputPort
+    public class WallRun : IWallRunInputPort, IWallSenseInputPort, IWallRunTickInputPort, IControlRotationOutput
     {
-        private readonly CharacterConfigData _config;
-        private readonly IWallRunPhysicsOutput _physicsOutput;
+        private readonly CharacterConfigData _characterConfigData;
+        private readonly IWallRunPhysicsOutput _wallRunPhysicsOutput;
 
-        public WallRun(CharacterConfigData config, IWallRunPhysicsOutput physicsOutput)
+        private WallRunInputData _lastInput;
+        private WallSenseData _lastSense;
+        private ControlRotationData _controlRotationData;
+        private float _wallRunTimer;
+        private bool _isWallRunning;
+
+        public WallRun(CharacterConfigData characterConfigData, IWallRunPhysicsOutput wallRunPhysicsOutput)
         {
-            _config = config;
-            _physicsOutput = physicsOutput;
+            _characterConfigData = characterConfigData;
+            _wallRunPhysicsOutput = wallRunPhysicsOutput;
         }
 
-        public void BeginWallRun(WallRunContactData data)
+        public void Handle(WallRunInputData data)
         {
-            WallSide side = data.IsLeftSide ? WallSide.Left : WallSide.Right;
-            float roll = side == WallSide.Left ? 20f : -20f;
-            _physicsOutput.BeginWallRun(new WallRunCommand(side, _config.WallRunSpeed, _config.WallRunDuration, roll));
+            _lastInput = data;
         }
 
-        public void EndWallRun()
+        public void Publish(WallSenseData data)
         {
-            _physicsOutput.EndWallRun();
+            _lastSense = data;
+        }
+
+        public void Publish(ControlRotationData data)
+        {
+            _controlRotationData = data;
+        }
+
+        public void Tick(float deltaTime)
+        {
+            bool hasWall = _lastSense.HasLeftWall || _lastSense.HasRightWall;
+            bool canStartByInput = _lastInput.MoveY > 0f;
+            bool isEligibleByState = hasWall && canStartByInput && _lastSense.IsAboveGround;
+
+            if (!isEligibleByState)
+            {
+                StopWallRun(resetTimer: true);
+                _wallRunPhysicsOutput.ApplyWallRun(CreateStopCommand());
+                return;
+            }
+
+            bool canRunByTime = _characterConfigData.MaxWallRunTime <= 0f || _wallRunTimer < _characterConfigData.MaxWallRunTime;
+            if (!canRunByTime)
+            {
+                StopWallRun(resetTimer: false);
+                _wallRunPhysicsOutput.ApplyWallRun(CreateStopCommand());
+                return;
+            }
+
+            _isWallRunning = true;
+            _wallRunTimer += Math.Max(0f, deltaTime);
+            if (_characterConfigData.MaxWallRunTime > 0f)
+            {
+                _wallRunTimer = Math.Min(_wallRunTimer, _characterConfigData.MaxWallRunTime);
+            }
+
+            Vector3 wallNormal = _lastSense.HasRightWall ? _lastSense.RightWallNormal : _lastSense.LeftWallNormal;
+            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up);
+
+            float yawRad = _controlRotationData.Yaw * (MathF.PI / 180f);
+            Vector3 orientationForward = new Vector3(MathF.Sin(yawRad), 0f, MathF.Cos(yawRad));
+            if ((orientationForward - wallForward).sqrMagnitude > (orientationForward + wallForward).sqrMagnitude)
+            {
+                wallForward = -wallForward;
+            }
+
+            float verticalVelocity = 0f;
+            if (_lastInput.IsClimbPressed)
+            {
+                verticalVelocity = _characterConfigData.WallClimbSpeed;
+            }
+            else if (_lastInput.IsDescendPressed)
+            {
+                verticalVelocity = -_characterConfigData.WallClimbSpeed;
+            }
+
+            bool shouldStickToWall = !(_lastSense.HasLeftWall && _lastInput.MoveX > 0f) &&
+                                    !(_lastSense.HasRightWall && _lastInput.MoveX < 0f);
+
+            _wallRunPhysicsOutput.ApplyWallRun(
+                new WallRunCommand(
+                    true,
+                    false,
+                    wallForward,
+                    _characterConfigData.WallRunForce,
+                    true,
+                    verticalVelocity,
+                    shouldStickToWall,
+                    wallNormal,
+                    _characterConfigData.WallStickForce));
+        }
+
+        private void StopWallRun(bool resetTimer)
+        {
+            _isWallRunning = false;
+            if (resetTimer)
+            {
+                _wallRunTimer = 0f;
+            }
+        }
+
+        private WallRunCommand CreateStopCommand()
+        {
+            return new WallRunCommand(
+                false,
+                true,
+                Vector3.zero,
+                0f,
+                false,
+                0f,
+                false,
+                Vector3.zero,
+                0f);
         }
     }
 }

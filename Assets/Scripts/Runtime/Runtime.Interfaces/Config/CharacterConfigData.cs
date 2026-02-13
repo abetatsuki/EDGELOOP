@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Runtime
 {
     public struct CharacterConfigData
@@ -8,16 +10,20 @@ namespace Runtime
             float dashPower,
             float runMinRatio,
             float runScrollStep,
-            float wallRunSpeed,
-            float wallRunDuration)
+            float wallRunForce,
+            float wallClimbSpeed,
+            float maxWallRunTime,
+            float wallStickForce)
         {
             JumpPower = jumpPower;
             MoveSpeed = moveSpeed;
             DashPower = dashPower;
             RunMinRatio = runMinRatio;
             RunScrollStep = runScrollStep;
-            WallRunSpeed = wallRunSpeed;
-            WallRunDuration = wallRunDuration;
+            WallRunForce = wallRunForce;
+            WallClimbSpeed = wallClimbSpeed;
+            MaxWallRunTime = maxWallRunTime;
+            WallStickForce = wallStickForce;
         }
 
         public float JumpPower { get; private set; }
@@ -25,7 +31,9 @@ namespace Runtime
         public float DashPower { get; private set; }
         public float RunMinRatio { get; private set; }
         public float RunScrollStep { get; private set; }
-        public float WallRunSpeed { get; private set; }
-        public float WallRunDuration { get; private set; }
+        public float WallRunForce { get; private set; }
+        public float WallClimbSpeed { get; private set; }
+        public float MaxWallRunTime { get; private set; }
+        public float WallStickForce { get; private set; }
     }
 }

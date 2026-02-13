@@ -13,6 +13,7 @@ namespace Runtime
         [Inject] private ISlideInputPort _slidePort;
         [Inject] private IRunSpeedInputPort _runSpeedPort;
         [Inject] private ILookInputPort _lookPort;
+        [Inject] private IWallRunInputPort _wallRunInputPort;
 
         public void OnJump(InputAction.CallbackContext context)
         {
@@ -69,10 +70,11 @@ namespace Runtime
 
         private void Update()
         {
+            Vector2 moveValue = Vector2.zero;
             if (_moveAction != null)
             {
-                Vector2 value = _moveAction.ReadValue<Vector2>();
-                _movePort.Handle(new MoveInputData { X = value.x, Y = value.y });
+                moveValue = _moveAction.ReadValue<Vector2>();
+                _movePort.Handle(new MoveInputData { X = moveValue.x, Y = moveValue.y });
             }
 
             if (Mouse.current != null)
@@ -90,6 +92,16 @@ namespace Runtime
                 Vector2 lookValue = _lookAction.ReadValue<Vector2>();
                 _lookPort.Handle(new LookInputData { X = lookValue.x, Y = lookValue.y });
             }
+
+            bool climbPressed = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+            bool descendPressed = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
+            _wallRunInputPort.Handle(new WallRunInputData
+            {
+                MoveX = moveValue.x,
+                MoveY = moveValue.y,
+                IsClimbPressed = climbPressed,
+                IsDescendPressed = descendPressed,
+            });
         }
 
         private void OnDisable()
