@@ -57,7 +57,8 @@ namespace Runtime
                 .As<ISlideMotionOutput>()
                 .As<IWallRunPhysicsOutput>();
             builder.RegisterComponentInHierarchy<FpsCameraAdaptor>()
-                .As<ICameraRotationOutput>();
+                .As<ICameraRotationOutput>()
+                .As<IWallRunCameraOutput>();
             builder.RegisterComponentInHierarchy<InputBuffer>();
             builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
             builder.RegisterComponentInHierarchy<WallDetecter>();

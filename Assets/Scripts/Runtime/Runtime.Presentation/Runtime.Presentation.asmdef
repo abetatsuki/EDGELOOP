@@ -4,6 +4,7 @@
     "references": [
         "Runtime.Interfaces",
         "Unity.InputSystem",
+        "Unity.TextMeshPro",
         "VContainer"
     ],
     "includePlatforms": [],

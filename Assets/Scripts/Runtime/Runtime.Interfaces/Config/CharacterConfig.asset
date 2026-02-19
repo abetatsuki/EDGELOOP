@@ -17,3 +17,9 @@ MonoBehaviour:
   _dashPower: 8
   _lookSpeed: 0.1
   _maxPitch: 80
+  _runMinRatio: 0.25
+  _runScrollStep: 0.1
+  _wallRunForce: 15
+  _wallClimbSpeed: 2
+  _maxWallRunTime: 10
+  _wallStickForce: 100

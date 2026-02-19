@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runtime
@@ -7,6 +8,7 @@ namespace Runtime
     {
         private readonly CharacterConfigData _characterConfigData;
         private readonly IWallRunPhysicsOutput _wallRunPhysicsOutput;
+        private readonly IReadOnlyList<IWallRunCameraOutput> _wallRunCameraOutputs;
 
         private WallRunInputData _lastInput;
         private WallSenseData _lastSense;
@@ -14,10 +16,14 @@ namespace Runtime
         private float _wallRunTimer;
         private bool _isWallRunning;
 
-        public WallRun(CharacterConfigData characterConfigData, IWallRunPhysicsOutput wallRunPhysicsOutput)
+        public WallRun(
+            CharacterConfigData characterConfigData,
+            IWallRunPhysicsOutput wallRunPhysicsOutput,
+            IReadOnlyList<IWallRunCameraOutput> wallRunCameraOutputs)
         {
             _characterConfigData = characterConfigData;
             _wallRunPhysicsOutput = wallRunPhysicsOutput;
+            _wallRunCameraOutputs = wallRunCameraOutputs;
         }
 
         public void Handle(WallRunInputData data)
@@ -45,6 +51,7 @@ namespace Runtime
             {
                 StopWallRun(resetTimer: true);
                 _wallRunPhysicsOutput.ApplyWallRun(CreateStopCommand());
+                PublishCamera(false, 0f);
                 return;
             }
 
@@ -53,6 +60,7 @@ namespace Runtime
             {
                 StopWallRun(resetTimer: false);
                 _wallRunPhysicsOutput.ApplyWallRun(CreateStopCommand());
+                PublishCamera(false, 0f);
                 return;
             }
 
@@ -85,6 +93,7 @@ namespace Runtime
 
             bool shouldStickToWall = !(_lastSense.HasLeftWall && _lastInput.MoveX > 0f) &&
                                     !(_lastSense.HasRightWall && _lastInput.MoveX < 0f);
+            float tiltSign = _lastSense.HasRightWall ? 1f : -1f;
 
             _wallRunPhysicsOutput.ApplyWallRun(
                 new WallRunCommand(
@@ -97,6 +106,7 @@ namespace Runtime
                     shouldStickToWall,
                     wallNormal,
                     _characterConfigData.WallStickForce));
+            PublishCamera(true, tiltSign);
         }
 
         private void StopWallRun(bool resetTimer)
@@ -120,6 +130,15 @@ namespace Runtime
                 false,
                 Vector3.zero,
                 0f);
+        }
+
+        private void PublishCamera(bool isWallRunning, float tiltSign)
+        {
+            WallRunCameraCommand command = new WallRunCameraCommand(isWallRunning, tiltSign);
+            for (int i = 0; i < _wallRunCameraOutputs.Count; i++)
+            {
+                _wallRunCameraOutputs[i].ApplyWallRunCamera(command);
+            }
         }
     }
 }
