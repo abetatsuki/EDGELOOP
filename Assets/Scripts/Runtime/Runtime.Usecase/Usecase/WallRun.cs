@@ -6,6 +6,7 @@ namespace Runtime
 {
     public class WallRun : IWallRunInputPort, IWallSenseInputPort, IWallRunTickInputPort, IControlRotationOutput
     {
+        private readonly CharacterEntity _characterEntity;
         private readonly CharacterConfigData _characterConfigData;
         private readonly IWallRunPhysicsOutput _wallRunPhysicsOutput;
         private readonly IReadOnlyList<IWallRunCameraOutput> _wallRunCameraOutputs;
@@ -17,10 +18,12 @@ namespace Runtime
         private bool _isWallRunning;
 
         public WallRun(
+            CharacterEntity characterEntity,
             CharacterConfigData characterConfigData,
             IWallRunPhysicsOutput wallRunPhysicsOutput,
             IReadOnlyList<IWallRunCameraOutput> wallRunCameraOutputs)
         {
+            _characterEntity = characterEntity;
             _characterConfigData = characterConfigData;
             _wallRunPhysicsOutput = wallRunPhysicsOutput;
             _wallRunCameraOutputs = wallRunCameraOutputs;
@@ -43,6 +46,15 @@ namespace Runtime
 
         public void Tick(float deltaTime)
         {
+            _characterEntity.TickWallRunLock(deltaTime);
+            if (_characterEntity.IsWallRunLocked())
+            {
+                StopWallRun(resetTimer: true);
+                _wallRunPhysicsOutput.ApplyWallRun(CreateStopCommand());
+                PublishCamera(false, 0f);
+                return;
+            }
+
             bool hasWall = _lastSense.HasLeftWall || _lastSense.HasRightWall;
             bool canStartByInput = _lastInput.MoveY > 0f;
             bool isEligibleByState = hasWall && canStartByInput && _lastSense.IsAboveGround;

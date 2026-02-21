@@ -29,40 +29,6 @@ namespace Runtime
                 _characterConfig.MaxPitch
             );
             builder.RegisterInstance(cameraConfigData);
-            // Core
-            builder.Register<CharacterEntity>(Lifetime.Singleton);
-
-            // Usecases (contract only)
-            builder.Register<Movement>(Lifetime.Singleton)
-                .As<IJumpInputPort>()
-                .As<IMoveInputPort>()
-                .As<IDashInputPort>()
-                .As<ISlideInputPort>()
-                .As<IRunSpeedInputPort>()
-                .As<IControlRotationOutput>();
-            builder.Register<CameraLook>(Lifetime.Singleton)
-                .As<ILookInputPort>();
-            builder.Register<Environment>(Lifetime.Singleton).As<IEnvironmentInputPort>();
-            builder.Register<WallRun>(Lifetime.Singleton)
-                .As<IWallRunInputPort>()
-                .As<IWallSenseInputPort>()
-                .As<IWallRunTickInputPort>()
-                .As<IControlRotationOutput>();
-
-            // Presentation components
-            builder.RegisterComponentInHierarchy<RigidBodyAdaptor>()
-                .As<IJumpPhysicsOutput>()
-                .As<IMovePhysicsOutput>()
-                .As<IDashPhysicsOutput>()
-                .As<ISlideMotionOutput>()
-                .As<IWallRunPhysicsOutput>();
-            builder.RegisterComponentInHierarchy<FpsCameraAdaptor>()
-                .As<ICameraRotationOutput>()
-                .As<IWallRunCameraOutput>();
-            builder.RegisterComponentInHierarchy<InputBuffer>();
-            builder.RegisterComponentInHierarchy<EnviromentAdaptor>();
-            builder.RegisterComponentInHierarchy<WallDetecter>();
-            builder.RegisterComponentInHierarchy<WallRunDriver>();
 
             if (_moveSpeedUiAdaptor != null)
             {

@@ -8,7 +8,9 @@ namespace Runtime
     public class FpsCameraAdaptor : MonoBehaviour, ICameraRotationOutput, IWallRunCameraOutput
     {
         [SerializeField] private Transform _bodyTransform;
+        [SerializeField] private Transform _pitchPivot;
         [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private GameObject[] _localOnlyObjects;
         [SerializeField] private float _wallRunFov = 95f;
         [SerializeField] private float _wallRunTiltAngle = 15f;
         [SerializeField] private float _wallRunTweenDuration = 0.25f;
@@ -17,12 +19,32 @@ namespace Runtime
         private float _defaultFov;
         private float _currentPitch;
         private float _currentTiltZ;
+        private float _targetTiltZ;
+        private float _targetFov;
         private bool _isWallRunActive;
         private float _tiltSign;
+        private bool _isLocalCameraActive = true;
 #if DOTWEEN_ENABLED
         private Tween _fovTween;
         private Tween _tiltTween;
 #endif
+
+        public void SetUseMainCamera(bool useMainCamera)
+        {
+            _isLocalCameraActive = useMainCamera;
+            if (_localOnlyObjects == null)
+            {
+                return;
+            }
+            for (int i = 0; i < _localOnlyObjects.Length; i++)
+            {
+                GameObject localOnlyObject = _localOnlyObjects[i];
+                if (localOnlyObject != null)
+                {
+                    localOnlyObject.SetActive(_isLocalCameraActive);
+                }
+            }
+        }
 
         public void ApplyLook(CameraLookCommand command)
         {
@@ -31,9 +53,18 @@ namespace Runtime
                 _bodyTransform.rotation = Quaternion.Euler(0f, command.Yaw, 0f);
             }
 
-            if (_cameraTransform != null)
+            if (!_isLocalCameraActive)
             {
-                _currentPitch = command.Pitch;
+                return;
+            }
+
+            _currentPitch = command.Pitch;
+            if (_pitchPivot != null)
+            {
+                _pitchPivot.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
+            }
+            else if (_cameraTransform != null)
+            {
                 _cameraTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
             }
         }
@@ -43,6 +74,11 @@ namespace Runtime
             bool isSameState = _isWallRunActive == command.IsWallRunning;
             bool isSameTilt = Mathf.Abs(_tiltSign - command.TiltSign) <= 0.01f;
             if (isSameState && isSameTilt)
+            {
+                return;
+            }
+
+            if (!_isLocalCameraActive)
             {
                 return;
             }
@@ -62,9 +98,9 @@ namespace Runtime
                 _bodyTransform = transform;
             }
 
-            if (_cameraTransform == null && Camera.main != null)
+            if (_pitchPivot == null)
             {
-                _cameraTransform = Camera.main.transform;
+                _pitchPivot = _cameraTransform;
             }
 
             if (_cameraTransform != null)
@@ -72,26 +108,30 @@ namespace Runtime
                 _cameraComponent = _cameraTransform.GetComponent<Camera>();
                 _currentPitch = _cameraTransform.localEulerAngles.x;
             }
-            else if (Camera.main != null)
-            {
-                _cameraComponent = Camera.main;
-            }
 
             if (_cameraComponent != null)
             {
                 _defaultFov = _cameraComponent.fieldOfView;
+                _targetFov = _defaultFov;
             }
+            _targetTiltZ = _currentTiltZ;
         }
 
         private void AnimateCamera(float targetFov, float targetTilt)
         {
+            _targetFov = targetFov;
+            _targetTiltZ = targetTilt;
+
             if (_cameraComponent != null)
             {
 #if DOTWEEN_ENABLED
                 _fovTween?.Kill();
                 _fovTween = _cameraComponent.DOFieldOfView(targetFov, _wallRunTweenDuration);
 #else
-                _cameraComponent.fieldOfView = targetFov;
+                if (_wallRunTweenDuration <= 0f)
+                {
+                    _cameraComponent.fieldOfView = targetFov;
+                }
 #endif
             }
 
@@ -102,7 +142,11 @@ namespace Runtime
                 value =>
                 {
                     _currentTiltZ = value;
-                    if (_cameraTransform != null)
+                    if (_pitchPivot != null)
+                    {
+                        _pitchPivot.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
+                    }
+                    else if (_cameraTransform != null)
                     {
                         _cameraTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
                     }
@@ -110,8 +154,38 @@ namespace Runtime
                 targetTilt,
                 _wallRunTweenDuration);
 #else
-            _currentTiltZ = targetTilt;
-            if (_cameraTransform != null)
+            if (_wallRunTweenDuration <= 0f)
+            {
+                _currentTiltZ = targetTilt;
+                if (_pitchPivot != null)
+                {
+                    _pitchPivot.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
+                }
+                else if (_cameraTransform != null)
+                {
+                    _cameraTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
+                }
+            }
+#endif
+        }
+
+        private void Update()
+        {
+#if !DOTWEEN_ENABLED
+            float duration = Mathf.Max(0.0001f, _wallRunTweenDuration);
+            float t = Time.deltaTime / duration;
+
+            if (_cameraComponent != null)
+            {
+                _cameraComponent.fieldOfView = Mathf.Lerp(_cameraComponent.fieldOfView, _targetFov, t);
+            }
+
+            _currentTiltZ = Mathf.Lerp(_currentTiltZ, _targetTiltZ, t);
+            if (_pitchPivot != null)
+            {
+                _pitchPivot.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
+            }
+            else if (_cameraTransform != null)
             {
                 _cameraTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentTiltZ);
             }

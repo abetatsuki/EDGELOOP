@@ -1,10 +1,10 @@
 ﻿
 using System;
 using System.Collections.Generic;
-
+using UnityEngine;
 namespace Runtime
 {
-    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort, ISlideInputPort, IRunSpeedInputPort, IControlRotationOutput
+    public class Movement : IJumpInputPort, IMoveInputPort, IDashInputPort, ISlideInputPort, IRunSpeedInputPort, IControlRotationOutput, IWallSenseInputPort
     {
         private readonly CharacterEntity _characterEntity;
         private readonly IJumpPhysicsOutput _jumpPhysicsOutput;
@@ -14,9 +14,12 @@ namespace Runtime
         private readonly IReadOnlyList<IMoveSpeedOutput> _moveSpeedOutputs;
         private CharacterConfigData _characterConfigData;
         private MoveInputData _lastMoveInput;
+        private WallSenseData _lastWallSense;
         private ControlRotationData _controlRotationData;
         private const float INPUT_THRESHOLD = 0.0001f;
         private const float RUN_MAX_RATIO = 1f;
+        private const float WALL_JUMP_HORIZONTAL_RATIO = 0.8f;
+        private const float WALL_RUN_RELOCK_SECONDS = 0.25f;
         private float _runSpeedRatio = RUN_MAX_RATIO;
 
         public Movement(
@@ -39,19 +42,35 @@ namespace Runtime
 
         public void Handle(JumpInputData data)
         {
-            if (!_characterEntity.CanJump())
+            if (!data.IsPressed)
             {
                 return;
             }
-            float power = _characterConfigData.JumpPower;
-            if (data.IsPressed)
+
+            if (_characterEntity.CanJump())
             {
-                _jumpPhysicsOutput.ApplyJump(new JumpCommand(power));
+                _jumpPhysicsOutput.ApplyJump(new JumpCommand(_characterConfigData.JumpPower));
+                return;
             }
-            else
+
+            if (!CanWallJump())
             {
-                
+                return;
             }
+
+            Vector3 awayDirection = ResolveWallNormal();
+            if (awayDirection.sqrMagnitude <= INPUT_THRESHOLD)
+            {
+                return;
+            }
+
+            awayDirection = awayDirection.normalized;
+            Vector3 inputDirection = ResolveWorldInputDirection();
+            Vector3 jumpDirection = ResolveWallJumpDirection(inputDirection, awayDirection);
+
+            float horizontalPower = _characterConfigData.DashPower * WALL_JUMP_HORIZONTAL_RATIO;
+            _jumpPhysicsOutput.ApplyJump(new JumpCommand(0f, jumpDirection, horizontalPower));
+            _characterEntity.LockWallRun(WALL_RUN_RELOCK_SECONDS);
         }
 
         public void Handle(MoveInputData data)
@@ -133,6 +152,11 @@ namespace Runtime
             _controlRotationData = data;
         }
 
+        public void Publish(WallSenseData data)
+        {
+            _lastWallSense = data;
+        }
+
         private void ToWorldDirection(float localX, float localY, out float worldX, out float worldY)
         {
             float yawRad = _controlRotationData.Yaw * (MathF.PI / 180f);
@@ -141,6 +165,72 @@ namespace Runtime
 
             worldX = (localX * cos) + (localY * sin);
             worldY = (-localX * sin) + (localY * cos);
+        }
+
+        private bool CanWallJump()
+        {
+            if (!_lastWallSense.IsAboveGround)
+            {
+                return false;
+            }
+            return _lastWallSense.HasLeftWall || _lastWallSense.HasRightWall;
+        }
+
+        private Vector3 ResolveWallNormal()
+        {
+            bool hasLeft = _lastWallSense.HasLeftWall;
+            bool hasRight = _lastWallSense.HasRightWall;
+
+            if (hasLeft && hasRight)
+            {
+                Vector3 inputDir = ResolveWorldInputDirection();
+                float leftDot = Vector3.Dot(inputDir, _lastWallSense.LeftWallNormal);
+                float rightDot = Vector3.Dot(inputDir, _lastWallSense.RightWallNormal);
+                return leftDot >= rightDot ? _lastWallSense.LeftWallNormal : _lastWallSense.RightWallNormal;
+            }
+
+            if (hasRight)
+            {
+                return _lastWallSense.RightWallNormal;
+            }
+
+            if (hasLeft)
+            {
+                return _lastWallSense.LeftWallNormal;
+            }
+
+            return Vector3.zero;
+        }
+
+        private Vector3 ResolveWorldInputDirection()
+        {
+            float magnitude = MathF.Sqrt((_lastMoveInput.X * _lastMoveInput.X) + (_lastMoveInput.Y * _lastMoveInput.Y));
+            if (magnitude <= INPUT_THRESHOLD)
+            {
+                return Vector3.zero;
+            }
+
+            float localX = _lastMoveInput.X / magnitude;
+            float localY = _lastMoveInput.Y / magnitude;
+            ToWorldDirection(localX, localY, out float worldX, out float worldY);
+            return new Vector3(worldX, 0f, worldY);
+        }
+
+        private Vector3 ResolveWallJumpDirection(Vector3 inputDirection, Vector3 awayDirection)
+        {
+            if (inputDirection.sqrMagnitude <= INPUT_THRESHOLD)
+            {
+                return awayDirection;
+            }
+
+            Vector3 normalizedInput = inputDirection.normalized;
+            float dot = Vector3.Dot(normalizedInput, awayDirection);
+            if (dot <= 0f)
+            {
+                return awayDirection;
+            }
+
+            return normalizedInput;
         }
     }
 }

@@ -1,24 +1,26 @@
-﻿using Runtime;
+using Runtime;
 using UnityEngine;
-using VContainer;
 
 public class EnviromentAdaptor : MonoBehaviour
 {
-    
-    [Inject] private IEnvironmentInputPort _applyEnvironmentState;
+    private IEnvironmentInputPort _applyEnvironmentState;
 
+    public void SetEnvironmentInputPort(IEnvironmentInputPort applyEnvironmentState)
+    {
+        _applyEnvironmentState = applyEnvironmentState;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
-          _applyEnvironmentState?.ApplyEnvironment(
+        _applyEnvironmentState?.ApplyEnvironment(
             new EnvironmentInputData(true)
         );
     }
+
     private void OnCollisionExit(Collision collision)
     {
-          _applyEnvironmentState?.ApplyEnvironment(
+        _applyEnvironmentState?.ApplyEnvironment(
             new EnvironmentInputData(false)
         );
     }
 }
-

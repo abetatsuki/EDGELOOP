@@ -1,54 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using VContainer;
 
 namespace Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
     public class InputBuffer : MonoBehaviour
     {
-        [Inject] private IJumpInputPort _jumpPort;
-        [Inject] private IMoveInputPort _movePort;
-        [Inject] private IDashInputPort _dashPort;
-        [Inject] private ISlideInputPort _slidePort;
-        [Inject] private IRunSpeedInputPort _runSpeedPort;
-        [Inject] private ILookInputPort _lookPort;
-        [Inject] private IWallRunInputPort _wallRunInputPort;
-
-        public void OnJump(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                _jumpPort.Handle(new JumpInputData { IsPressed = true });
-            }
-            else if (context.canceled)
-            {
-                _jumpPort.Handle(new JumpInputData { IsPressed = false });
-            }
-        }
-
-        public void OnDash(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                _dashPort.Handle(new DashInputData { IsPressed = true });
-            }
-            else if (context.canceled)
-            {
-                _dashPort.Handle(new DashInputData { IsPressed = false });
-            }
-        }
-        public void OnSlide(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                _slidePort.Handle(new SlideInputData { IsPressed = true });
-            }
-            else if (context.canceled)
-            {
-                _slidePort.Handle(new SlideInputData { IsPressed = false });
-            }
-        }
+        [Header("Standalone Cursor")]
+        [SerializeField] private bool _lockCursorOnEnable = true;
 
         private PlayerInput _playerInput;
 
@@ -57,24 +16,84 @@ namespace Runtime
         private const string DASH_ACTION = "Sprint";
         private const string SLIDE_ACTION = "Slide";
         private const string LOOK_ACTION = "Look";
+
         private InputAction _jumpAction;
         private InputAction _moveAction;
         private InputAction _dashAction;
         private InputAction _slideAction;
         private InputAction _lookAction;
 
+        private Vector2 _move;
+        private Vector2 _look;
+        private bool _jumpHeld;
+        private bool _dashHeld;
+        private bool _slideHeld;
+        private bool _jumpPressed;
+        private bool _dashPressed;
+        private bool _slidePressed;
+        private sbyte _runSpeedDelta;
+        private bool _climbHeld;
+        private bool _descendHeld;
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _jumpHeld = true;
+                _jumpPressed = true;
+            }
+            else if (context.canceled)
+            {
+                _jumpHeld = false;
+            }
+        }
+
+        public void OnDash(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _dashHeld = true;
+                _dashPressed = true;
+            }
+            else if (context.canceled)
+            {
+                _dashHeld = false;
+            }
+        }
+
+        public void OnSlide(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                _slideHeld = true;
+                _slidePressed = true;
+            }
+            else if (context.canceled)
+            {
+                _slideHeld = false;
+            }
+        }
+
         private void OnEnable()
         {
             PlayerInputSetUp();
+            if (_lockCursorOnEnable)
+            {
+                ApplyCursorLock(true);
+            }
         }
 
         private void Update()
         {
-            Vector2 moveValue = Vector2.zero;
             if (_moveAction != null)
             {
-                moveValue = _moveAction.ReadValue<Vector2>();
-                _movePort.Handle(new MoveInputData { X = moveValue.x, Y = moveValue.y });
+                _move = _moveAction.ReadValue<Vector2>();
+            }
+
+            if (_lookAction != null)
+            {
+                // Mouse delta is frame-based. Accumulate until network tick consumes it.
+                _look += _lookAction.ReadValue<Vector2>();
             }
 
             if (Mouse.current != null)
@@ -82,26 +101,46 @@ namespace Runtime
                 float scrollY = Mouse.current.scroll.ReadValue().y;
                 if (Mathf.Abs(scrollY) > 0.001f)
                 {
-                    float direction = Mathf.Sign(scrollY);
-                    _runSpeedPort.Handle(new RunSpeedInputData { Delta = direction });
+                    _runSpeedDelta = (sbyte)Mathf.RoundToInt(Mathf.Sign(scrollY));
                 }
             }
 
-            if (_lookAction != null)
+            if (Keyboard.current != null)
             {
-                Vector2 lookValue = _lookAction.ReadValue<Vector2>();
-                _lookPort.Handle(new LookInputData { X = lookValue.x, Y = lookValue.y });
+                _climbHeld = Keyboard.current.leftShiftKey.isPressed;
+                _descendHeld = Keyboard.current.leftCtrlKey.isPressed;
             }
-
-            bool climbPressed = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
-            bool descendPressed = Keyboard.current != null && Keyboard.current.leftCtrlKey.isPressed;
-            _wallRunInputPort.Handle(new WallRunInputData
+            else
             {
-                MoveX = moveValue.x,
-                MoveY = moveValue.y,
-                IsClimbPressed = climbPressed,
-                IsDescendPressed = descendPressed,
-            });
+                _climbHeld = false;
+                _descendHeld = false;
+            }
+        }
+
+        public NetInput BuildNetInputAndConsumeOneShots()
+        {
+            NetInput netInput = new NetInput
+            {
+                Move = _move,
+                Look = _look,
+                JumpHeld = _jumpHeld,
+                DashHeld = _dashHeld,
+                SlideHeld = _slideHeld,
+                JumpPressed = _jumpPressed,
+                DashPressed = _dashPressed,
+                SlidePressed = _slidePressed,
+                RunSpeedDelta = _runSpeedDelta,
+                ClimbHeld = _climbHeld,
+                DescendHeld = _descendHeld,
+            };
+
+            _jumpPressed = false;
+            _dashPressed = false;
+            _slidePressed = false;
+            _runSpeedDelta = 0;
+            _look = Vector2.zero;
+
+            return netInput;
         }
 
         private void OnDisable()
@@ -117,11 +156,27 @@ namespace Runtime
                 _dashAction.performed -= OnDash;
                 _dashAction.canceled -= OnDash;
             }
+
             if (_slideAction != null)
             {
                 _slideAction.performed -= OnSlide;
                 _slideAction.canceled -= OnSlide;
             }
+
+            if (_lockCursorOnEnable)
+            {
+                ApplyCursorLock(false);
+            }
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!_lockCursorOnEnable)
+            {
+                return;
+            }
+
+            ApplyCursorLock(hasFocus);
         }
 
         private void PlayerInputSetUp()
@@ -142,6 +197,12 @@ namespace Runtime
             _slideAction.canceled += OnSlide;
 
             _lookAction = _playerInput.actions[LOOK_ACTION];
+        }
+
+        private static void ApplyCursorLock(bool lockCursor)
+        {
+            Cursor.lockState = lockCursor ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !lockCursor;
         }
     }
 }

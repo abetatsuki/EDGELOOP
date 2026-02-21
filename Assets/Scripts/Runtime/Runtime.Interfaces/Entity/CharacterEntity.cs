@@ -28,6 +28,10 @@ namespace Runtime
         {
             return _isGround;
         }
+        public bool IsWallRunLocked()
+        {
+            return _wallRunLockRemaining > 0f;
+        }
 
         public void SetIsGround(bool isGround)
         {
@@ -45,10 +49,23 @@ namespace Runtime
         {
             _isSliding = isSliding;
         }
+        public void LockWallRun(float duration)
+        {
+            _wallRunLockRemaining = Mathf.Max(_wallRunLockRemaining, Mathf.Max(0f, duration));
+        }
+        public void TickWallRunLock(float deltaTime)
+        {
+            if (_wallRunLockRemaining <= 0f)
+            {
+                return;
+            }
+            _wallRunLockRemaining = Mathf.Max(0f, _wallRunLockRemaining - Mathf.Max(0f, deltaTime));
+        }
         private bool _isGround;
         private bool _isDashing;
         private bool _isCrouching;
         private bool _isSliding;
+        private float _wallRunLockRemaining;
 
     }
 }

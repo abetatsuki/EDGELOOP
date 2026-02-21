@@ -1,5 +1,4 @@
 using UnityEngine;
-using VContainer;
 
 namespace Runtime
 {
@@ -11,24 +10,40 @@ namespace Runtime
         [SerializeField] private float _wallCheckDistance = 1f;
         [SerializeField] private float _minJumpHeight = 1f;
 
-        [Inject] private IWallSenseInputPort _wallSenseInputPort;
+        private IWallSenseInputPort _wallSenseInputPort;
+        private IWallSenseInputPort _additionalWallSenseInputPort;
 
         private bool _wallRight;
         private bool _wallLeft;
         private RaycastHit _rightWallHit;
         private RaycastHit _leftWallHit;
 
+        public void SetWallSenseInputPort(IWallSenseInputPort wallSenseInputPort)
+        {
+            _wallSenseInputPort = wallSenseInputPort;
+        }
+
+        public void SetAdditionalWallSenseInputPort(IWallSenseInputPort wallSenseInputPort)
+        {
+            _additionalWallSenseInputPort = wallSenseInputPort;
+        }
+
         private void Update()
         {
             CheckForWall();
             bool isAboveGround = AboveGround();
 
-            _wallSenseInputPort?.Publish(new WallSenseData(
+            WallSenseData data = new WallSenseData(
                 _wallLeft,
                 _wallRight,
                 _wallLeft ? _leftWallHit.normal : Vector3.zero,
                 _wallRight ? _rightWallHit.normal : Vector3.zero,
-                isAboveGround));
+                isAboveGround);
+            _wallSenseInputPort?.Publish(data);
+            if (_additionalWallSenseInputPort != null && _additionalWallSenseInputPort != _wallSenseInputPort)
+            {
+                _additionalWallSenseInputPort.Publish(data);
+            }
         }
 
         private void CheckForWall()

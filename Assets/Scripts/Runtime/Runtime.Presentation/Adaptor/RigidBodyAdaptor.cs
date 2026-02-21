@@ -10,6 +10,11 @@ namespace Runtime
         public void ApplyJump(JumpCommand command)
         {
             _rigidbody.AddForce(Vector3.up * command.Power, ForceMode.Impulse);
+            if (command.HorizontalPower > 0f && command.HorizontalDirection.sqrMagnitude > 0.0001f)
+            {
+                Vector3 horizontalDirection = new Vector3(command.HorizontalDirection.x, 0f, command.HorizontalDirection.z).normalized;
+                _rigidbody.AddForce(horizontalDirection * command.HorizontalPower, ForceMode.Impulse);
+            }
          }
 
         public void ApplyMove(MoveCommand command)
