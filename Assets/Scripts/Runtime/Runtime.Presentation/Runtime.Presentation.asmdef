@@ -3,10 +3,8 @@
     "rootNamespace": "Runtime",
     "references": [
         "Runtime.Interfaces",
-        "Runtime.Usecase",
         "Unity.InputSystem",
-        "Unity.TextMeshPro",
-        "VContainer"
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -63,14 +63,8 @@
         "GlobalsSize": 0
     },
     "AssembliesToWeave": [
-        "Fusion.Unity",
-        "Assembly-CSharp",
-        "Assembly-CSharp-firstpass",
-        "Fusion.Addons.Physics",
-        "Runtime.Presentation",
         "Runtime.Interfaces",
-        "Runtime.Usecase",
-        "Runtime.Bootstrap"
+        "Runtime.Network.Fusion"
     ],
     "UseSerializableDictionary": true,
     "NullChecksForNetworkedProperties": true,

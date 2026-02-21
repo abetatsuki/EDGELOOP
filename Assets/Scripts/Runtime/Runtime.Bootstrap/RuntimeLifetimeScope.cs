@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -29,6 +30,20 @@ namespace Runtime
                 _characterConfig.MaxPitch
             );
             builder.RegisterInstance(cameraConfigData);
+            builder.Register<PlayerRuntimeFactory>(Lifetime.Singleton)
+                .As<IPlayerRuntimeFactory>();
+            builder.RegisterBuildCallback(container =>
+            {
+                RuntimeServiceRegistry.PlayerRuntimeFactory = container.Resolve<IPlayerRuntimeFactory>();
+                if (container.TryResolve<IReadOnlyList<IMoveSpeedUiInput>>(out var uiInputs))
+                {
+                    RuntimeServiceRegistry.MoveSpeedUiInputs = uiInputs;
+                }
+                else
+                {
+                    RuntimeServiceRegistry.MoveSpeedUiInputs = null;
+                }
+            });
 
             if (_moveSpeedUiAdaptor != null)
             {

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bea02b865dceb247b7bd9dbd1b15c68, type: 3}
   m_Name: CharacterConfig
   m_EditorClassIdentifier: Runtime.Interfaces::Runtime.CharacterConfig
-  _jumpPower: 3
+  _jumpPower: 2
   _moveSpeed: 5
-  _dashPower: 13
+  _dashPower: 8
   _lookSpeed: 0.2
   _maxPitch: 80
   _runMinRatio: 0.25
   _runScrollStep: 0.1
-  _wallRunForce: 15
-  _wallClimbSpeed: 2
+  _wallRunForce: 20
+  _wallClimbSpeed: 4
   _maxWallRunTime: 10
-  _wallStickForce: 100
+  _wallStickForce: 200

@@ -1,13 +1,18 @@
 {
-    "name": "Runtime.Interfaces",
+    "name": "Runtime.Network.Fusion",
     "rootNamespace": "Runtime",
-    "references": [],
+    "references": [
+        "Runtime.Interfaces",
+        "Runtime.Presentation",
+        "Fusion.Unity",
+        "Unity.InputSystem"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
